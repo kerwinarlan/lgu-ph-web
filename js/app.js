@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // Initialize interactive utility modules
+  initGlobalParticleCanvas();
   initPSTClock();
   initGovBannerToggle();
   initAccessibilityEngine();
@@ -591,4 +592,106 @@ function initMouseSpotlight() {
       card.style.setProperty("--mouse-y", `${y}%`);
     });
   });
+}
+
+// Screen-wide Ambient Moving Gold/Sky Light Particles Canvas
+function initGlobalParticleCanvas() {
+  const canvas = document.getElementById("global-bg-canvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  let mouseX = width / 2;
+  let mouseY = height / 2;
+
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  let scrollY = window.scrollY;
+  window.addEventListener("scroll", () => {
+    scrollY = window.scrollY;
+  });
+
+  const particleCount = 45;
+  const particles = Array.from({ length: particleCount }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 2.2 + 0.8,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    baseAlpha: Math.random() * 0.4 + 0.2,
+    color: Math.random() > 0.4 ? "245, 158, 11" : Math.random() > 0.5 ? "59, 130, 246" : "2, 132, 199",
+    waveFactor: Math.random() * Math.PI * 2
+  }));
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    const time = Date.now() * 0.001;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Update position with slight wave motion
+      p.x += p.vx + Math.sin(time + p.waveFactor) * 0.15;
+      p.y += p.vy + Math.cos(time + p.waveFactor) * 0.15;
+
+      // Wrap around edges
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+      if (p.y < 0) p.y = height;
+      if (p.y > height) p.y = 0;
+
+      // React subtly to mouse proximity
+      const dx = mouseX - p.x;
+      const dy = (mouseY + scrollY * 0.1) - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        const angle = Math.atan2(dy, dx);
+        p.x -= Math.cos(angle) * 0.5;
+        p.y -= Math.sin(angle) * 0.5;
+      }
+
+      // Draw particle
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color}, ${p.baseAlpha})`;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = `rgba(${p.color}, 0.5)`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Draw faint connections between close particles
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const pdx = p.x - p2.x;
+        const pdy = p.y - p2.y;
+        const pdist = Math.sqrt(pdx * pdx + pdy * pdy);
+
+        if (pdist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(${p.color}, ${0.12 * (1 - pdist / 120)})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
