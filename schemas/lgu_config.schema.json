@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "lgu_name",
+    "lgu_level",
+    "province",
+    "region",
+    "psgc_code",
+    "income_class",
+    "mayor",
+    "contact"
+  ],
+  "properties": {
+    "lgu_name": { "type": "string" },
+    "lgu_level": {
+      "type": "string",
+      "enum": ["Barangay", "Municipality", "City", "Province"]
+    },
+    "province": { "type": "string" },
+    "region": { "type": "string" },
+    "psgc_code": {
+      "type": "string",
+      "pattern": "^[0-9]{10}$"
+    },
+    "income_class": { "type": "string" },
+    "mayor": {
+      "type": "object",
+      "required": ["name", "term"],
+      "properties": {
+        "name": { "type": "string" },
+        "term": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "required": ["address", "phone", "email", "office_hours"],
+      "properties": {
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "office_hours": { "type": "string" }
+      }
+    },
+    "social_links": {
+      "type": "object"
+    }
+  }
+}

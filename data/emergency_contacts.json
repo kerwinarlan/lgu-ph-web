@@ -1,0 +1,28 @@
+{
+  "hotlines": [
+    {
+      "agency": "MDRRMO (Disaster Risk Reduction)",
+      "phone": "+63 917 555 0199",
+      "landline": "(042) 555-0199",
+      "available": "24/7"
+    },
+    {
+      "agency": "Municipal Police Station (PNP)",
+      "phone": "+63 998 555 0122",
+      "landline": "(042) 555-0122",
+      "available": "24/7"
+    },
+    {
+      "agency": "Bureau of Fire Protection (BFP)",
+      "phone": "+63 922 555 0133",
+      "landline": "(042) 555-0133",
+      "available": "24/7"
+    },
+    {
+      "agency": "Municipal Health Office / Ambulance",
+      "phone": "+63 918 555 0144",
+      "landline": "(042) 555-0144",
+      "available": "24/7"
+    }
+  ]
+}

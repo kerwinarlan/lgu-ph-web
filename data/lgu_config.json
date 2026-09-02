@@ -1,0 +1,22 @@
+{
+  "lgu_name": "Municipality of Sampaloc",
+  "lgu_level": "Municipality",
+  "province": "Quezon",
+  "region": "Region IV-A (CALABARZON)",
+  "psgc_code": "0405621000",
+  "income_class": "5th Class",
+  "mayor": {
+    "name": "Hon. Juan D. Dela Cruz",
+    "term": "2022-2025",
+    "message": "Welcome to the official digital portal of Sampaloc, Quezon."
+  },
+  "contact": {
+    "address": "Poblacion, Sampaloc, Quezon 4329",
+    "phone": "+63 (042) 555-0123",
+    "email": "info@sampalocquezon.gov.ph",
+    "office_hours": "Monday - Friday, 8:00 AM - 5:00 PM"
+  },
+  "social_links": {
+    "facebook": "https://facebook.com/LGUSampalocQuezon"
+  }
+}

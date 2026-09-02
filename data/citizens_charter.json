@@ -1,0 +1,43 @@
+{
+  "updated_at": "2025-01-10",
+  "services": [
+    {
+      "id": "CC-001",
+      "service_name": "Issuance of Business Permit and Licensing Clearance",
+      "office": "Business Permits and Licensing Office (BPLO)",
+      "classification": "Simple",
+      "processing_time": "1 working day",
+      "fees": "Varies by business tax declaration",
+      "required_documents": [
+        "Barangay Business Clearance",
+        "DTI or SEC Registration",
+        "Occupancy Permit"
+      ]
+    },
+    {
+      "id": "CC-002",
+      "service_name": "Issuance of Certificate of Real Property Tax Clearance",
+      "office": "Office of the Municipal Treasurer",
+      "classification": "Simple",
+      "processing_time": "30 minutes",
+      "fees": "PHP 100.00 clearance fee",
+      "required_documents": [
+        "Latest Tax Declaration",
+        "Official Receipt of Real Property Tax Payment"
+      ]
+    },
+    {
+      "id": "CC-003",
+      "service_name": "Application for Municipal Health Certificate",
+      "office": "Municipal Health Office (MHO)",
+      "classification": "Simple",
+      "processing_time": "2 hours",
+      "fees": "PHP 150.00 medical fee",
+      "required_documents": [
+        "Chest X-ray Result",
+        "1x1 ID Picture",
+        "Valid Government ID"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LGU Web Portal - Republic of the Philippines</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="lgu-title" id="lgu-header-info">
+        <h1>Local Government Unit</h1>
+        <p>Republic of the Philippines</p>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-container">
+      <a href="#about">About LGU</a>
+      <a href="#emergency">Emergency Hotlines</a>
+      <a href="#charter">Citizen's Charter</a>
+      <a href="#fdp">Full Disclosure (DILG)</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="about" class="hero">
+      <div id="mayor-message">
+        <h3>Welcome to the LGU Portal</h3>
+        <p>Providing transparent, accessible, and fast public services.</p>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section id="emergency" class="card">
+        <h2>Emergency Hotlines (24/7)</h2>
+        <ul id="emergency-contacts" class="emergency-list">
+          <li class="emergency-item">Loading emergency numbers...</li>
+        </ul>
+      </section>
+
+      <section id="announcements" class="card">
+        <h2>Recent Advisory</h2>
+        <p><strong>Community Advisory on Heavy Rainfall</strong></p>
+        <p>Residents in low-lying areas are advised to monitor weather updates and contact MDRRMO for support.</p>
+      </section>
+    </div>
+
+    <section id="charter" class="card" style="margin-bottom: 2rem;">
+      <h2>ARTA Citizen's Charter (RA 11032)</h2>
+      <input type="text" id="charter-search" class="search-input" placeholder="Search service name, office, or code...">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Service Name</th>
+              <th>Office</th>
+              <th>Type</th>
+              <th>Processing Time</th>
+              <th>Fees</th>
+            </tr>
+          </thead>
+          <tbody id="charter-table-body">
+            <tr><td colspan="6">Loading services...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="fdp" class="card">
+      <h2>DILG Full Disclosure Policy (FDP) Portal</h2>
+      <p style="margin-bottom: 1rem; font-size: 0.9rem;">Quarterly financial, procurement, and budget reports published in compliance with DILG guidelines.</p>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Document Title</th>
+              <th>Published Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="fdp-table-body">
+            <tr><td colspan="4">Loading FDP documents...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Republic of the Philippines | Official LGU Portal Framework</p>
+    <p>Compliant with DILG Full Disclosure Policy & ARTA Citizen's Charter standards.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

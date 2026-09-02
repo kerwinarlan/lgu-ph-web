@@ -1,0 +1,38 @@
+{
+  "fiscal_year": 2024,
+  "quarter": "Q4",
+  "documents": [
+    {
+      "id": "FDP-2024-Q4-01",
+      "category": "Annual Budget Report",
+      "title": "Approved Executive Budget FY 2024",
+      "publication_date": "2024-01-15",
+      "file_url": "docs/fdp/2024-Q4-annual-budget.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "FDP-2024-Q4-02",
+      "category": "Special Education Fund",
+      "title": "SEF Income and Expenditure Report Q4 2024",
+      "publication_date": "2024-12-31",
+      "file_url": "docs/fdp/2024-Q4-sef-report.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "FDP-2024-Q4-03",
+      "category": "Procurement Plan",
+      "title": "Annual Procurement Plan (APP) FY 2024 Amendment",
+      "publication_date": "2024-10-10",
+      "file_url": "docs/fdp/2024-Q4-app.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "FDP-2024-Q4-04",
+      "category": "20% Development Fund",
+      "title": "20% Development Fund Utilization Q4 2024",
+      "publication_date": "2024-12-30",
+      "file_url": "docs/fdp/2024-Q4-dev-fund.pdf",
+      "status": "Published"
+    }
+  ]
+}
