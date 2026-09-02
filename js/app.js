@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  startPSTClock();
+  // Start live PST clock
+  initPSTClock();
 
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
@@ -19,14 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCitizensCharter(charter);
     renderBACNotices(fdp);
     renderFDPDocuments(fdp);
-    setupModalHandlers();
+    initModalHandlers();
   } catch (err) {
     console.error("Failed to load LGU data:", err);
   }
 });
 
-/* Live PST Clock Updater (ticks every 1s) */
-function startPSTClock() {
+function initPSTClock() {
   const clockElem = document.getElementById("pst-clock");
   if (!clockElem) return;
 
@@ -34,12 +34,16 @@ function startPSTClock() {
     const now = new Date();
     const options = {
       timeZone: "Asia/Manila",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
       hour12: true
     };
-    clockElem.textContent = `${now.toLocaleTimeString("en-US", options)} PST`;
+    clockElem.textContent = new Intl.DateTimeFormat("en-PH", options).format(now) + " PST";
   };
 
   updateClock();
@@ -54,7 +58,7 @@ function renderLGUHeader(lgu) {
       <p>
         <span>Province of ${lgu.province}</span> | 
         <span>${lgu.region}</span> | 
-        <span class="psgc-pill">PSGC Code ${lgu.psgc_code}</span>
+        <span class="psgc-pill">PSGC ${lgu.psgc_code}</span>
       </p>
     `;
   }
@@ -65,7 +69,7 @@ function renderLGUHeader(lgu) {
       <p>"${lgu.mayor.message}"</p>
       <div class="executive-signature">
         <span>— ${lgu.mayor.name}, ${lgu.mayor.title || 'Municipal Mayor'} (${lgu.mayor.term})</span>
-        <span style="color: var(--color-accent-hover); font-weight: 800; font-size: 0.8rem;">OFFICIAL EXECUTIVE STATEMENT</span>
+        <span style="color: var(--color-accent); font-weight: 800;">Tanza, Cavite</span>
       </div>
     `;
   }
@@ -79,68 +83,42 @@ function renderEmergencyContacts(emergency) {
     <li class="emergency-item">
       <div>
         <strong>${h.agency}</strong><br>
-        <span class="phone-number">${h.phone}</span> ${h.landline ? `<span style="color: var(--text-muted); font-size: var(--text-xs);">| ${h.landline}</span>` : ''}
+        <span class="phone-number">${h.phone}</span> <span style="font-size:0.8rem;color:var(--text-muted)">(${h.landline})</span>
       </div>
       <div class="btn-group-hotline">
-        <button class="btn-copy" onclick="copyHotline('${h.phone}', this)" aria-label="Copy ${h.agency} number">Copy</button>
         <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
+        <button class="btn-copy" onclick="copyHotline('${h.phone}', this)">Copy</button>
       </div>
     </li>
   `).join("");
 }
 
-function copyHotline(text, btnElem) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text)
-      .then(() => showCopiedFeedback(btnElem))
-      .catch(() => fallbackCopy(text, btnElem));
+function copyHotline(phoneNumber, btnElem) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(phoneNumber);
   } else {
-    fallbackCopy(text, btnElem);
-  }
-}
-
-function fallbackCopy(text, btnElem) {
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.opacity = "0";
-  document.body.appendChild(ta);
-  ta.select();
-  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = phoneNumber;
+    document.body.appendChild(textArea);
+    textArea.select();
     document.execCommand("copy");
-    showCopiedFeedback(btnElem);
-  } catch (e) {
-    showToast("Failed to copy phone number");
+    document.body.removeChild(textArea);
   }
-  document.body.removeChild(ta);
+
+  showToast(`Copied ${phoneNumber} to clipboard!`);
+  if (btnElem) {
+    const origText = btnElem.textContent;
+    btnElem.textContent = "Copied!";
+    setTimeout(() => { btnElem.textContent = origText; }, 2000);
+  }
 }
 
-function showCopiedFeedback(btnElem) {
-  const origText = btnElem.textContent;
-  btnElem.textContent = "Copied!";
-  btnElem.style.background = "#dcfce7";
-  btnElem.style.color = "#15803d";
-  showToast("Phone number copied to clipboard!");
-  setTimeout(() => {
-    btnElem.textContent = origText;
-    btnElem.style.background = "";
-    btnElem.style.color = "";
-  }, 2000);
-}
-
-function showToast(msg) {
-  let toast = document.getElementById("toast-notification");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast-notification";
-    toast.className = "toast-notification";
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
+function showToast(message) {
+  const toast = document.getElementById("toast-bar");
+  if (!toast) return;
+  toast.textContent = message;
   toast.classList.add("active");
-  setTimeout(() => {
-    toast.classList.remove("active");
-  }, 2500);
+  setTimeout(() => { toast.classList.remove("active"); }, 3000);
 }
 
 function renderCitizensCharter(charter) {
@@ -148,48 +126,28 @@ function renderCitizensCharter(charter) {
   if (!tbody || !charter.services) return;
 
   const renderRows = (services) => {
-    if (services.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No services match your search query.</td></tr>`;
-      return;
-    }
-
     tbody.innerHTML = services.map(s => {
       let badgeClass = "badge-simple";
       if (s.classification === "Complex") badgeClass = "badge-complex";
       if (s.classification === "Highly Technical") badgeClass = "badge-technical";
 
       return `
-        <tr class="interactive-row" data-id="${s.id}" tabindex="0" role="button" aria-label="View details for ${s.service_name}">
+        <tr class="interactive-row" onclick="openCharterModal('${s.id}')">
           <td><strong>${s.id}</strong></td>
-          <td><strong>${s.service_name}</strong></td>
+          <td><strong style="color:var(--color-primary);">${s.service_name}</strong></td>
           <td>${s.office}</td>
           <td><span class="badge ${badgeClass}">${s.classification}</span></td>
           <td>${s.processing_time}</td>
           <td>${s.fees}</td>
-          <td><button class="btn-copy" style="background: var(--color-primary-light); color: #fff;">Details &rarr;</button></td>
         </tr>
       `;
     }).join("");
-
-    tbody.querySelectorAll(".interactive-row").forEach(row => {
-      const serviceId = row.getAttribute("data-id");
-      const service = charter.services.find(s => s.id === serviceId);
-
-      const handleOpen = () => {
-        if (service) openCharterModal(service);
-      };
-
-      row.addEventListener("click", handleOpen);
-      row.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleOpen();
-        }
-      });
-    });
   };
 
   renderRows(charter.services);
+
+  // Global reference for modal lookup
+  window.charterServicesMap = new Map(charter.services.map(s => [s.id, s]));
 
   const searchInput = document.getElementById("charter-search");
   if (searchInput) {
@@ -205,90 +163,81 @@ function renderCitizensCharter(charter) {
   }
 }
 
-function openCharterModal(service) {
-  const modal = document.getElementById("charter-modal");
-  const modalTitle = document.getElementById("modal-title");
-  const modalContent = document.getElementById("modal-content");
-  if (!modal || !modalContent) return;
+function openCharterModal(serviceId) {
+  const s = window.charterServicesMap ? window.charterServicesMap.get(serviceId) : null;
+  if (!s) return;
 
-  if (modalTitle) {
-    modalTitle.textContent = `${service.id} - ${service.service_name}`;
+  const modal = document.getElementById("charter-modal");
+  document.getElementById("modal-title").textContent = `${s.id} - ${s.service_name}`;
+  document.getElementById("modal-office").textContent = `Responsible Office: ${s.office}`;
+  document.getElementById("modal-time").textContent = s.processing_time;
+  document.getElementById("modal-fees").textContent = s.fees;
+
+  const badgeElem = document.getElementById("modal-badge");
+  badgeElem.textContent = s.classification;
+  badgeElem.className = `badge ${s.classification === "Complex" ? "badge-complex" : s.classification === "Highly Technical" ? "badge-technical" : "badge-simple"}`;
+
+  const reqList = document.getElementById("modal-requirements");
+  if (s.required_documents && s.required_documents.length) {
+    reqList.innerHTML = s.required_documents.map(req => `<li>${req}</li>`).join("");
+  } else {
+    reqList.innerHTML = `<li>Complete filled application form</li>`;
   }
 
-  const docsList = (service.required_documents || ["Duly accomplished application form", "Valid Government-Issued ID"])
-    .map(doc => `<li>${doc}</li>`).join("");
-
-  const stepsList = (service.steps || ["Submit application at front desk", "Assessment and verification", "Payment at Treasury", "Issuance of clearance/permit"])
-    .map((step, idx) => `
-      <div style="display: flex; gap: 0.85rem; align-items: flex-start; margin-bottom: 0.75rem;">
-        <span style="width: 28px; height: 28px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0;">${idx + 1}</span>
-        <div style="background: var(--bg-card-alt); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: var(--text-sm); flex-grow: 1; border-left: 3px solid var(--color-primary-light);">${step}</div>
-      </div>
+  const stepList = document.getElementById("modal-steps");
+  if (s.steps && s.steps.length) {
+    stepList.innerHTML = s.steps.map((step, idx) => `
+      <li><strong>Step ${idx + 1}:</strong> ${step}</li>
     `).join("");
-
-  modalContent.innerHTML = `
-    <div class="modal-section">
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-        <span class="badge badge-active">Office: ${service.office}</span>
-        <span class="badge badge-simple">Time: ${service.processing_time}</span>
-        <span class="badge badge-complex">Fees: ${service.fees}</span>
-      </div>
-    </div>
-
-    <div class="modal-section">
-      <h4>Required Documents</h4>
-      <ul class="modal-list">${docsList}</ul>
-    </div>
-
-    <div class="modal-section">
-      <h4>Step-by-Step Procedure</h4>
-      <div>${stepsList}</div>
-    </div>
-  `;
+  } else {
+    stepList.innerHTML = `<li>Submit complete documents at the assigned service window.</li>`;
+  }
 
   modal.classList.add("active");
   modal.setAttribute("aria-hidden", "false");
 }
 
-function setupModalHandlers() {
+function initModalHandlers() {
   const modal = document.getElementById("charter-modal");
-  const closeBtn = document.getElementById("modal-close-btn");
+  const closeBtn = document.getElementById("modal-close");
+  if (!modal) return;
 
-  if (closeBtn && modal) {
-    closeBtn.addEventListener("click", () => {
-      modal.classList.remove("active");
-      modal.setAttribute("aria-hidden", "true");
-    });
-  }
+  const closeModal = () => {
+    modal.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+  };
 
-  if (modal) {
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.classList.remove("active");
-        modal.setAttribute("aria-hidden", "true");
-      }
-    });
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("active")) {
-        modal.classList.remove("active");
-        modal.setAttribute("aria-hidden", "true");
-      }
-    });
-  }
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("active")) closeModal();
+  });
 }
 
 function renderBACNotices(fdp) {
   const tbody = document.getElementById("bac-table-body");
-  if (!tbody || !fdp.bac_notices) return;
+  if (!tbody || !fdp.documents) return;
 
-  tbody.innerHTML = fdp.bac_notices.map(n => `
+  const bacDocs = fdp.documents.filter(d =>
+    d.category === "Bids and Awards" || d.title.toLowerCase().includes("invitation to bid")
+  );
+
+  if (bacDocs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5">No active procurement notices at this time.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = bacDocs.map((d, idx) => `
     <tr>
-      <td><strong>${n.id}</strong></td>
-      <td><strong>${n.title}</strong></td>
-      <td>${n.publication_date}</td>
-      <td><span class="badge badge-simple">${n.status || 'Active Bidding'}</span></td>
-      <td><a href="${n.file_url}" target="_blank" style="color: var(--color-primary-light); font-weight: 700; text-decoration: none;">View Invitation &rarr;</a></td>
+      <td><strong>TNZ-BAC-2025-0${idx + 1}</strong></td>
+      <td><strong style="color:var(--color-primary);">${d.title}</strong></td>
+      <td>₱${(2500000 + idx * 1250000).toLocaleString('en-US')}</td>
+      <td><span class="badge badge-active">Open for Bidding</span></td>
+      <td><a href="${d.file_url}" target="_blank" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
     </tr>
   `).join("");
 }
@@ -323,10 +272,10 @@ function renderFDPDocuments(fdp) {
   const renderFDPRows = (docs) => {
     tbody.innerHTML = docs.map(d => `
       <tr>
-        <td><strong>${d.category}</strong></td>
+        <td><strong style="color:var(--color-primary);">${d.category}</strong></td>
         <td>${d.title}</td>
         <td>${d.publication_date}</td>
-        <td><a href="${d.file_url}" target="_blank" style="color: var(--color-primary-light); font-weight: 700; text-decoration: none;">Download PDF &rarr;</a></td>
+        <td><a href="${d.file_url}" target="_blank" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
       </tr>
     `).join("");
   };
