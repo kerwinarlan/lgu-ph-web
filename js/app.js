@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initGovBannerToggle();
   initAccessibilityEngine();
   initUniversalSearch();
+  initStatCounters();
 
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
@@ -76,11 +77,31 @@ function initAccessibilityEngine() {
   }
 }
 
-// Universal Search Bar Filtering
+// Universal Search Bar Filtering & Keyboard Shortcuts (Cmd+K / '/')
 function initUniversalSearch() {
   const searchInput = document.getElementById("universal-search-input");
   const clearBtn = document.getElementById("universal-search-clear");
   if (!searchInput) return;
+
+  // Global Keyboard Shortcuts
+  window.addEventListener("keydown", (e) => {
+    // Cmd+K or Ctrl+K
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+    // '/' shortcut when not in input/textarea
+    if (e.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+    // Esc to blur search
+    if (e.key === "Escape" && document.activeElement === searchInput) {
+      searchInput.blur();
+    }
+  });
 
   const performFilter = (query) => {
     const q = query.toLowerCase().trim();
@@ -123,6 +144,51 @@ function initUniversalSearch() {
       searchInput.focus();
     });
   }
+}
+
+// Animated Stat Counter Physics
+function initStatCounters() {
+  const counterElems = document.querySelectorAll("[data-count]");
+  if (!counterElems.length) return;
+
+  const animateCounter = (elem) => {
+    const target = parseFloat(elem.getAttribute("data-count"));
+    const decimals = parseInt(elem.getAttribute("data-decimals") || "0", 10);
+    const suffix = elem.getAttribute("data-suffix") || "";
+    const duration = 1500; // ms
+    const startTime = performance.now();
+
+    const updateValue = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out expo formula
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const currentValue = target * easeProgress;
+
+      elem.textContent = currentValue.toLocaleString("en-US", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      }) + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(updateValue);
+      }
+    };
+
+    requestAnimationFrame(updateValue);
+  };
+
+  // Intersection Observer to trigger counter animation on scroll into view
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  counterElems.forEach(elem => observer.observe(elem));
 }
 
 function initPSTClock() {

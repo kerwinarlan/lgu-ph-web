@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- Cache-Busted Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=4.0.0">
+  <link rel="stylesheet" href="css/style.css?v=5.0.0">
 </head>
 <body>
 
@@ -153,6 +153,9 @@
         </label>
         <div class="search-input-wrapper">
           <input type="text" id="universal-search-input" class="universal-input" placeholder="Type service, clearance, or bid title (e.g. BPLO, Tax, School, Building)...">
+          <div class="search-shortcut-hint">
+            <kbd class="kbd-pill">⌘K</kbd> or <kbd class="kbd-pill">/</kbd>
+          </div>
           <button type="button" id="universal-search-clear" class="search-clear-btn" title="Clear search">&times;</button>
         </div>
       </div>
@@ -176,7 +179,7 @@
       <!-- Quick Municipal Stats Bento Grid -->
       <div class="stat-grid">
         <div class="stat-card">
-          <div class="stat-value">339,308</div>
+          <div class="stat-value" data-count="339308">339,308</div>
           <div class="stat-label">Population (2024)</div>
         </div>
         <div class="stat-card">
@@ -184,11 +187,11 @@
           <div class="stat-label">Income Class</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">78.33 km²</div>
+          <div class="stat-value" data-count="78.33" data-decimals="2" data-suffix=" km²">78.33 km²</div>
           <div class="stat-label">Land Area</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">41</div>
+          <div class="stat-value" data-count="41">41</div>
           <div class="stat-label">Barangays</div>
         </div>
       </div>
