@@ -3,14 +3,17 @@
   "lgu_level": "Municipality",
   "province": "Cavite",
   "region": "Region IV-A (CALABARZON)",
-  "psgc_code": "0421200000",
+  "psgc_code": "0402120000",
   "income_class": "1st Class",
-  "population": 312116,
-  "overview": "Welcome to the official portal of Tanza Municipality, Cavite (Region IV-A). Tanza is a 1st class municipality with a population of 312,116 (2020 Census). This portal provides citizens, businesses, and visitors with public service guides, ARTA Citizen's Charter workflows, DILG Full Disclosure Policy files, and 24/7 emergency contacts.",
+  "population": 339308,
+  "area_sq_km": 78.33,
+  "zip_code": "4108",
+  "motto": "Serbisyo sa Mamamayan, Malasakit Para sa Bayan",
+  "overview": "Welcome to the official portal of Tanza, Cavite (Heart of the Cavite Coast). Tanza is a 1st class municipality with a population of 339,308 (2024 Census) and 41 barangays. Historic site where Emilio Aguinaldo took his oath of office as Philippine Revolutionary President in 1897.",
   "mayor": {
-    "name": "Hon. Yuri A. Pacumio",
-    "term": "2022-2025",
-    "message": "Welcome to the dedicated portal of Tanza Municipality. We are committed to fast, transparent public service and full DILG/ARTA disclosure."
+    "name": "Hon. Archangelo B. Matro",
+    "term": "2025-2028",
+    "message": "Welcome to the dedicated portal of Tanza Municipality. We provide transparent, ARTA and DILG compliant public services for every Tanzeño."
   },
   "contact": {
     "address": "Municipal Hall, Poblacion, Tanza, Cavite 4108",
