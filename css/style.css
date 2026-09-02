@@ -9,7 +9,9 @@
 :root {
   /* Brand & Palette (Deep Civic Navy / Coastal Azure / Gold Heritage) */
   --color-primary-dark: #070d1e;
-  --color-primary: #1e3a8a;
+  --color-primary: #8b5cf6;
+  --color-violet-glow: #a855f7;
+  --color-magenta-glow: #d946ef;
   --color-primary-light: #2563eb;
   --color-accent: #f59e0b;
   --color-accent-hover: #d97706;
