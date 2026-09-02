@@ -8,54 +8,71 @@
 </head>
 <body>
 
-  <!-- Top Utility Bar -->
+  <!-- [01] Top Utility Bar -->
   <div class="top-gov-bar">
     <div class="top-gov-container">
       <div class="gov-brand">
         <span class="seal-badge">GOV.PH</span>
         <span>Republic of the Philippines | Province of Cavite</span>
       </div>
-      <div>
-        <span>Standard Time: PST (UTC+8)</span>
+      <div class="clock-display">
+        <span>Standard Time:</span>
+        <strong id="pst-clock">PST (UTC+8)</strong>
       </div>
     </div>
   </div>
 
+  <!-- [02] Glassmorphic Header -->
   <header>
     <div class="header-container">
       <div class="lgu-title" id="lgu-header-info">
         <h1>Municipality of Tanza</h1>
-        <p>Province of Cavite | Region IV-A (CALABARZON)</p>
+        <p>
+          <span>Province of Cavite</span> | 
+          <span>Region IV-A (CALABARZON)</span> | 
+          <span class="psgc-pill">PSGC 0402120000</span>
+        </p>
       </div>
     </div>
   </header>
 
-  <!-- Sticky Emergency Banner -->
+  <!-- [03] Sticky Emergency Alert Bar (Pinned Top) -->
   <div class="sticky-emergency-bar">
-    🚨 EMERGENCY HOTLINES (24/7): MDRRMO <strong>+63 917 555 0199</strong> | PNP <strong>+63 998 555 0122</strong> | BFP <strong>+63 922 555 0133</strong>
+    <div class="emergency-pulse-dot" aria-hidden="true"></div>
+    <span><strong>24/7 EMERGENCY HOTLINES:</strong></span>
+    <div class="emergency-hotline-pills">
+      <a href="tel:+639175550199" class="hotline-pill">MDRRMO: +63 917 555 0199</a>
+      <a href="tel:+639985550122" class="hotline-pill">PNP: +63 998 555 0122</a>
+      <a href="tel:+639225550133" class="hotline-pill">BFP: +63 922 555 0133</a>
+    </div>
   </div>
 
+  <!-- [04] Primary Navigation -->
   <nav>
     <div class="nav-container">
       <a href="#about">Executive Message</a>
       <a href="#services">Online Services</a>
       <a href="#emergency">Emergency Directory</a>
       <a href="#charter">Citizen's Charter</a>
+      <a href="#bac">Bids &amp; Awards (BAC)</a>
       <a href="#fdp">Full Disclosure (DILG)</a>
     </div>
   </nav>
 
   <main>
-    <!-- Executive Hero & Mayor's Message -->
+    <!-- [05] Executive Hero Section (Asymmetrical Split Grid) -->
     <section id="about" class="executive-hero">
       <div id="lgu-overview">
-        <h2>Message from the Municipal Mayor</h2>
+        <div class="executive-hero-header">
+          <span class="executive-badge">Serbisyo sa Mamamayan</span>
+          <h2>Message from the Municipal Mayor</h2>
+        </div>
         <div class="executive-quote" id="mayor-message-box">
           Loading executive message...
         </div>
       </div>
 
-      <!-- Quick Municipal Stats -->
+      <!-- Quick Municipal Stats Bento Grid -->
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-value">339,308</div>
@@ -76,29 +93,46 @@
       </div>
     </section>
 
-    <!-- Quick Online Services Grid -->
-    <section id="services" style="margin-bottom: 2rem;">
-      <h2 style="font-size: 1.4rem; color: var(--primary-dark); margin-bottom: 1rem;">Core Public Services</h2>
+    <!-- [06] Core Public Services Bento Grid -->
+    <section id="services" style="margin-bottom: 2.5rem;">
+      <div class="section-title-group">
+        <h2>Core Public Services &amp; Digital Portals</h2>
+        <p>Access municipal permits, clearances, procurement opportunities, and financial reports.</p>
+      </div>
+
       <div class="service-actions-grid">
         <a href="#charter" class="action-card">
+          <span class="card-badge">ARTA Compliant</span>
           <h3>🏢 Business Permits (BPLO)</h3>
-          <p>Apply or renew municipal business clearance and licenses.</p>
+          <p>Apply or renew municipal business clearance, licenses, and Mayor's permit.</p>
         </a>
         <a href="#charter" class="action-card">
+          <span class="card-badge">Fast Track</span>
           <h3>📜 Real Property Tax</h3>
-          <p>Request tax declaration records and tax clearances.</p>
+          <p>Request property tax declarations, assessments, and municipal tax clearances.</p>
         </a>
         <a href="#charter" class="action-card">
-          <h3>🏥 Municipal Health Office</h3>
-          <p>Health certificates, medical clearances, and consultations.</p>
+          <span class="card-badge">Public Health</span>
+          <h3>🏥 Health Office (MHO)</h3>
+          <p>Health certificates, medical clearances, sanitary permits, and consultations.</p>
         </a>
+        
+        <!-- Bento Highlight Card (Spans 2 columns) -->
+        <a href="#bac" class="action-card bento-highlight">
+          <span class="card-badge" style="background: #fef3c7; color: var(--color-accent-hover);">RA 9184 Procurement</span>
+          <h3>🏗️ Bids &amp; Awards Committee (BAC) Notices</h3>
+          <p>Explore active invitations to bid, infrastructure projects, school rehabilitation, and public procurement opportunities.</p>
+        </a>
+
         <a href="#fdp" class="action-card">
-          <h3>📊 DILG Transparency</h3>
-          <p>Access municipal executive budgets, SEF reports, and procurement plans.</p>
+          <span class="card-badge">DILG Transparency</span>
+          <h3>📊 Full Disclosure Portal</h3>
+          <p>Access quarterly municipal executive budgets, SEF reports, and 20% development funds.</p>
         </a>
       </div>
     </section>
 
+    <!-- [07] Dual-Column Utility Section -->
     <div class="grid">
       <!-- 24/7 Emergency Directory -->
       <section id="emergency" class="card">
@@ -108,25 +142,27 @@
         </ul>
       </section>
 
-      <!-- Local Advisory & Announcements -->
+      <!-- Local Advisory & Public Announcements -->
       <section id="announcements" class="card">
-        <h2>Public Advisory & Press Releases</h2>
-        <div style="background-color: var(--bg-light); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--primary);">
-          <p style="font-weight: 700; color: var(--primary-dark);">Community Weather Advisory</p>
-          <p style="font-size: 0.9rem; margin-top: 0.25rem;">
-            The Municipal Disaster Risk Reduction and Management Office (MDRRMO) advises low-lying and coastal barangays to monitor daily weather updates.
+        <h2>Public Advisory &amp; Announcements</h2>
+        <div style="background-color: var(--bg-card-alt); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--color-primary-light);">
+          <p style="font-weight: 700; color: var(--color-primary-dark); font-size: var(--text-base);">Community Weather &amp; Safety Advisory</p>
+          <p style="font-size: var(--text-sm); color: var(--text-muted); margin-top: 0.35rem; line-height: 1.6;">
+            The Municipal Disaster Risk Reduction and Management Office (MDRRMO) advises low-lying and coastal barangays to monitor daily weather updates. For immediate assistance, call our 24/7 hotline numbers above.
           </p>
         </div>
       </section>
     </div>
 
-    <!-- ARTA Citizen's Charter Section -->
-    <section id="charter" class="card" style="margin-bottom: 2rem;">
+    <!-- [08] ARTA Citizen's Charter Section -->
+    <section id="charter" class="card" style="margin-bottom: 2.5rem;">
       <h2>ARTA Citizen's Charter (RA 11032)</h2>
-      <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">
-        Official service workflows, processing timeframes, required application documents, and municipal fees under Republic Act 11032.
+      <p style="margin-bottom: 1.25rem; font-size: var(--text-sm); color: var(--text-muted);">
+        Official service workflows, processing timeframes, required application documents, and municipal fees under Republic Act 11032. <em>Click any service row to open the details modal drawer.</em>
       </p>
-      <input type="text" id="charter-search" class="search-input" placeholder="Search service name, office, or clearance code (e.g., BPLO, Tax, Permit)...">
+      
+      <input type="text" id="charter-search" class="search-input" placeholder="Search service name, office, or clearance code (e.g., BPLO, Tax, Permit)..." aria-label="Search Citizen's Charter services">
+      
       <div class="table-responsive">
         <table>
           <thead>
@@ -137,19 +173,44 @@
               <th>Classification</th>
               <th>Processing Time</th>
               <th>Fees</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody id="charter-table-body">
-            <tr><td colspan="6">Loading services...</td></tr>
+            <tr><td colspan="7">Loading services...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- DILG Full Disclosure Policy Section -->
+    <!-- [09] Dedicated Bids & Awards (BAC) Procurement Notices Section -->
+    <section id="bac" class="card" style="margin-bottom: 2.5rem;">
+      <h2>Bids and Awards Committee (BAC) Procurement Notices</h2>
+      <p style="margin-bottom: 1.25rem; font-size: var(--text-sm); color: var(--text-muted);">
+        Official invitations to bid, procurement notices, and contract awards published under Republic Act 9184 (Government Procurement Reform Act).
+      </p>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Notice ID</th>
+              <th>Procurement / Bidding Title</th>
+              <th>Published Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bac-table-body">
+            <tr><td colspan="5">Loading BAC notices...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- [10] DILG Full Disclosure Policy Section -->
     <section id="fdp" class="card">
       <h2>DILG Full Disclosure Policy (FDP) Portal</h2>
-      <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+      <p style="margin-bottom: 1.25rem; font-size: var(--text-sm); color: var(--text-muted);">
         Quarterly financial, procurement, and budget transparency disclosures published in compliance with DILG Memorandum Circular No. 2013-140.
       </p>
       
@@ -173,9 +234,20 @@
     </section>
   </main>
 
+  <!-- [11] Citizen's Charter Service Details Modal Drawer -->
+  <div id="charter-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+      <div id="modal-content">
+        <!-- Content dynamically inserted via js/app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- [12] Footer -->
   <footer>
     <p>&copy; 2025 Republic of the Philippines | Municipality of Tanza, Cavite</p>
-    <p style="margin-top: 0.25rem;">Compliant with DILG Full Disclosure Policy & ARTA Citizen's Charter (RA 11032) Standards.</p>
+    <p style="margin-top: 0.35rem; font-size: var(--text-xs);">Compliant with DILG Full Disclosure Policy &amp; ARTA Citizen's Charter (RA 11032) Standards.</p>
   </footer>
 
   <script src="js/app.js"></script>

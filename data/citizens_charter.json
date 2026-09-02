@@ -12,6 +12,12 @@
         "Barangay Business Clearance",
         "DTI or SEC Registration",
         "Occupancy Permit"
+      ],
+      "steps": [
+        "Submit completed unified application form and required documents at BPLO Counter 1.",
+        "Wait for tax assessment and computation of fees.",
+        "Pay business taxes and regulatory fees at the Municipal Treasurer Cashier Counter.",
+        "Claim the Mayor's Business Permit, Business Plate, and Official Receipt at BPLO Counter 3."
       ]
     },
     {
@@ -24,6 +30,12 @@
       "required_documents": [
         "Latest Tax Declaration",
         "Official Receipt of Real Property Tax Payment"
+      ],
+      "steps": [
+        "Present latest tax declaration or property account number at Treasurer Counter 2.",
+        "Verify tax payment status and updated account records.",
+        "Pay PHP 100.00 clearance fee at the Cashier.",
+        "Receive signed Real Property Tax Clearance certificate."
       ]
     },
     {
@@ -34,9 +46,72 @@
       "processing_time": "2 hours",
       "fees": "PHP 150.00 medical fee",
       "required_documents": [
-        "Chest X-ray Result",
-        "1x1 ID Picture",
+        "Chest X-ray Result (valid within 6 months)",
+        "1x1 ID Picture (2 copies)",
         "Valid Government ID"
+      ],
+      "steps": [
+        "Submit diagnostic medical results (X-ray, stool test) at MHO Triage Desk.",
+        "Undergo physical examination and medical assessment by the Municipal Health Officer.",
+        "Pay PHP 150.00 health fee at the Treasurer Window.",
+        "Claim validated Municipal Health Certificate."
+      ]
+    },
+    {
+      "id": "CC-004",
+      "service_name": "Issuance of Building Permit and Ancillary Permits",
+      "office": "Office of the Building Official (OBO)",
+      "classification": "Complex",
+      "processing_time": "5 working days",
+      "fees": "Based on NBCP Schedule of Fees (approx. PHP 1,500 - PHP 10,000+)",
+      "required_documents": [
+        "Certified True Copy of Transfer Certificate of Title (TCT)",
+        "Five (5) sets of signed & sealed Architectural/Engineering Plans",
+        "Barangay Construction Clearance & Zoning Clearance"
+      ],
+      "steps": [
+        "Submit five (5) sets of signed engineering plans and ownership docs at OBO Receiving Counter.",
+        "Technical evaluation and site inspection by structural, electrical, and sanitary engineers.",
+        "Issuance of Order of Payment upon technical approval.",
+        "Pay NBCP building permit fees at Municipal Treasurer.",
+        "Claim approved Building Permit and Construction Logbook at OBO Releasing Desk."
+      ]
+    },
+    {
+      "id": "CC-005",
+      "service_name": "Issuance of Civil Registry Certificates (Birth, Marriage, Death)",
+      "office": "Office of the Municipal Civil Registrar (MCR)",
+      "classification": "Simple",
+      "processing_time": "45 minutes",
+      "fees": "PHP 100.00 per certification copy",
+      "required_documents": [
+        "Valid Government ID of requestor",
+        "Authorization Letter & ID of document owner (if representative)"
+      ],
+      "steps": [
+        "Fill out Civil Registry document request form at MCR Counter 1.",
+        "Verification of record entry in local civil registry database.",
+        "Pay PHP 100.00 certification fee at Treasurer Window.",
+        "Receive official true copy or certified transcription of record."
+      ]
+    },
+    {
+      "id": "CC-006",
+      "service_name": "Issuance of Senior Citizen ID and Purchase Booklet",
+      "office": "Office of Senior Citizens Affairs (OSCA)",
+      "classification": "Simple",
+      "processing_time": "1 working day",
+      "fees": "FREE (No Fee)",
+      "required_documents": [
+        "Proof of Age (Birth Certificate, Passport, or Voter's ID showing 60+ years)",
+        "Barangay Certification of Residency in Tanza",
+        "1x1 ID Picture (2 copies)"
+      ],
+      "steps": [
+        "Submit OSCA application form and proof of residency at OSCA Desk.",
+        "Verification of age and voter/resident registration.",
+        "Encoding of senior citizen profile into municipal database.",
+        "Claim OSCA Identification Card and Medicine/Groceries Discount Purchase Booklet."
       ]
     }
   ]

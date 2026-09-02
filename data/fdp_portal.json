@@ -33,6 +33,38 @@
       "publication_date": "2024-12-30",
       "file_url": "docs/fdp/2024-Q4-dev-fund.pdf",
       "status": "Published"
+    },
+    {
+      "id": "BAC-2025-01",
+      "category": "Bids and Awards (BAC)",
+      "title": "Invitation to Bid: Rehabilitation of Barangay Highway Road Section (Poblacion to Amaya)",
+      "publication_date": "2025-01-08",
+      "file_url": "docs/fdp/bac-2025-road-rehab.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "BAC-2025-02",
+      "category": "Bids and Awards (BAC)",
+      "title": "Invitation to Bid: Improvement and Modernization of Tanza Elementary School Facilities",
+      "publication_date": "2025-01-12",
+      "file_url": "docs/fdp/bac-2025-school-facilities.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "BAC-2025-03",
+      "category": "Bids and Awards (BAC)",
+      "title": "Invitation to Bid: Procurement of Essential Medical Supplies and Diagnostic Equipment for RHU",
+      "publication_date": "2025-01-15",
+      "file_url": "docs/fdp/bac-2025-medical-supplies.pdf",
+      "status": "Published"
+    },
+    {
+      "id": "BAC-2025-04",
+      "category": "Bids and Awards (BAC)",
+      "title": "Notice of Award: Construction of Multi-Purpose Evacuation Center in Barangay Sahud-Ulan",
+      "publication_date": "2025-01-18",
+      "file_url": "docs/fdp/bac-2025-evacuation-center-noa.pdf",
+      "status": "Published"
     }
   ]
 }

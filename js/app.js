@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  startPSTClock();
+
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
       fetch("data/lgu_config.json"),
@@ -15,18 +17,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderLGUHeader(lgu);
     renderEmergencyContacts(emergency);
     renderCitizensCharter(charter);
+    renderBACNotices(fdp);
     renderFDPDocuments(fdp);
+    setupModalHandlers();
   } catch (err) {
     console.error("Failed to load LGU data:", err);
   }
 });
+
+/* Live PST Clock Updater */
+function startPSTClock() {
+  const clockElem = document.getElementById("pst-clock");
+  if (!clockElem) return;
+
+  const updateClock = () => {
+    const now = new Date();
+    // Format to Philippine Standard Time (UTC+8)
+    const options = {
+      timeZone: "Asia/Manila",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
+    };
+    clockElem.textContent = `${now.toLocaleTimeString("en-US", options)} PST`;
+  };
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
 
 function renderLGUHeader(lgu) {
   const headerElem = document.getElementById("lgu-header-info");
   if (headerElem) {
     headerElem.innerHTML = `
       <h1>${lgu.lgu_name}</h1>
-      <p>Province of ${lgu.province} | ${lgu.region} | PSGC Code ${lgu.psgc_code}</p>
+      <p>
+        <span>Province of ${lgu.province}</span> | 
+        <span>${lgu.region}</span> | 
+        <span class="psgc-pill">PSGC Code ${lgu.psgc_code}</span>
+      </p>
     `;
   }
 
@@ -49,11 +79,66 @@ function renderEmergencyContacts(emergency) {
     <li class="emergency-item">
       <div>
         <strong>${h.agency}</strong><br>
-        <span class="phone-number">${h.phone}</span> (${h.landline})
+        <span class="phone-number">${h.phone}</span> ${h.landline ? `<span class="landline-text">| ${h.landline}</span>` : ''}
       </div>
-      <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
+      <div class="emergency-actions">
+        <button class="btn-copy" onclick="copyHotline('${h.phone}', this)" aria-label="Copy ${h.agency} number">Copy</button>
+        <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
+      </div>
     </li>
   `).join("");
+}
+
+function copyHotline(text, btnElem) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => showCopiedFeedback(btnElem))
+      .catch(() => fallbackCopy(text, btnElem));
+  } else {
+    fallbackCopy(text, btnElem);
+  }
+}
+
+function fallbackCopy(text, btnElem) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    showCopiedFeedback(btnElem);
+  } catch (e) {
+    showToast("Failed to copy phone number");
+  }
+  document.body.removeChild(ta);
+}
+
+function showCopiedFeedback(btnElem) {
+  const origText = btnElem.textContent;
+  btnElem.textContent = "Copied!";
+  btnElem.classList.add("copied");
+  showToast("Phone number copied to clipboard!");
+  setTimeout(() => {
+    btnElem.textContent = origText;
+    btnElem.classList.remove("copied");
+  }, 2000);
+}
+
+function showToast(msg) {
+  let toast = document.getElementById("toast-notification");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast-notification";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
 
 function renderCitizensCharter(charter) {
@@ -61,22 +146,46 @@ function renderCitizensCharter(charter) {
   if (!tbody || !charter.services) return;
 
   const renderRows = (services) => {
+    if (services.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No services match your search query.</td></tr>`;
+      return;
+    }
+
     tbody.innerHTML = services.map(s => {
       let badgeClass = "badge-simple";
       if (s.classification === "Complex") badgeClass = "badge-complex";
       if (s.classification === "Highly Technical") badgeClass = "badge-technical";
 
       return `
-        <tr>
+        <tr class="charter-row" data-id="${s.id}" tabindex="0" role="button" aria-label="View details for ${s.service_name}">
           <td><strong>${s.id}</strong></td>
-          <td>${s.service_name}</td>
+          <td><strong>${s.service_name}</strong></td>
           <td>${s.office}</td>
           <td><span class="badge ${badgeClass}">${s.classification}</span></td>
           <td>${s.processing_time}</td>
           <td>${s.fees}</td>
+          <td><button class="btn-view-details">View Details &rarr;</button></td>
         </tr>
       `;
     }).join("");
+
+    // Attach click and keyboard accessibility handlers
+    tbody.querySelectorAll(".charter-row").forEach(row => {
+      const serviceId = row.getAttribute("data-id");
+      const service = charter.services.find(s => s.id === serviceId);
+
+      const handleOpen = () => {
+        if (service) openCharterModal(service);
+      };
+
+      row.addEventListener("click", handleOpen);
+      row.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleOpen();
+        }
+      });
+    });
   };
 
   renderRows(charter.services);
@@ -93,6 +202,108 @@ function renderCitizensCharter(charter) {
       renderRows(filtered);
     });
   }
+}
+
+function openCharterModal(s) {
+  const modal = document.getElementById("charter-modal");
+  const content = document.getElementById("modal-content");
+  if (!modal || !content) return;
+
+  let badgeClass = "badge-simple";
+  if (s.classification === "Complex") badgeClass = "badge-complex";
+  if (s.classification === "Highly Technical") badgeClass = "badge-technical";
+
+  const docsList = (s.required_documents || []).map(d => `<li>${d}</li>`).join("");
+  const stepsList = (s.steps || []).map(step => `<li>${step}</li>`).join("");
+
+  content.innerHTML = `
+    <div style="margin-bottom: 1rem;">
+      <span class="badge ${badgeClass}">${s.classification} Service</span>
+      <span style="font-size: var(--text-xs); color: var(--text-muted); margin-left: 0.5rem;">Code: <strong>${s.id}</strong></span>
+    </div>
+    <h3 id="modal-title" style="font-size: var(--text-lg); color: var(--color-primary-dark); margin-bottom: 0.5rem; font-weight: 800;">${s.service_name}</h3>
+    <p style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 1.25rem;">
+      <strong>Responsible Office:</strong> ${s.office}
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: var(--bg-card-alt); padding: 1rem; border-radius: var(--radius-md);">
+      <div>
+        <strong style="font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">Processing Time:</strong>
+        <div style="font-weight: 700; color: var(--color-primary); font-size: var(--text-sm); margin-top: 0.2rem;">${s.processing_time}</div>
+      </div>
+      <div>
+        <strong style="font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">Applicable Fees:</strong>
+        <div style="font-weight: 700; color: var(--color-primary-dark); font-size: var(--text-sm); margin-top: 0.2rem;">${s.fees}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <h4 style="font-size: var(--text-base); color: var(--color-primary-dark); margin-bottom: 0.5rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.25rem; font-weight: 700;">Required Application Documents</h4>
+      <ul style="padding-left: 1.25rem; font-size: var(--text-sm); color: var(--text-main); line-height: 1.6;">
+        ${docsList || "<li>No specific document checklist listed.</li>"}
+      </ul>
+    </div>
+
+    ${stepsList ? `
+      <div>
+        <h4 style="font-size: var(--text-base); color: var(--color-primary-dark); margin-bottom: 0.5rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.25rem; font-weight: 700;">Step-by-Step Procedure</h4>
+        <ol style="padding-left: 1.25rem; font-size: var(--text-sm); color: var(--text-main); line-height: 1.6;">
+          ${stepsList}
+        </ol>
+      </div>
+    ` : ""}
+  `;
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function setupModalHandlers() {
+  const modal = document.getElementById("charter-modal");
+  const closeBtn = document.getElementById("modal-close-btn");
+  if (!modal) return;
+
+  const closeModal = () => {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  };
+
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("open")) {
+      closeModal();
+    }
+  });
+}
+
+function renderBACNotices(fdp) {
+  const tbody = document.getElementById("bac-table-body");
+  if (!tbody || !fdp.documents) return;
+
+  const bacDocs = fdp.documents.filter(d => 
+    (d.category && d.category.toLowerCase().includes("bids")) ||
+    (d.id && d.id.startsWith("BAC"))
+  );
+
+  if (bacDocs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No active BAC notices published.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = bacDocs.map(d => `
+    <tr>
+      <td><strong>${d.id}</strong></td>
+      <td><strong>${d.title}</strong></td>
+      <td>${d.publication_date}</td>
+      <td><span class="badge badge-published">${d.status}</span></td>
+      <td><a href="${d.file_url}" target="_blank" class="btn-download-pdf">View Notice PDF</a></td>
+    </tr>
+  `).join("");
 }
 
 function renderFDPDocuments(fdp) {
@@ -128,7 +339,7 @@ function renderFDPDocuments(fdp) {
         <td><strong>${d.category}</strong></td>
         <td>${d.title}</td>
         <td>${d.publication_date}</td>
-        <td><a href="${d.file_url}" target="_blank" style="color: var(--primary); font-weight: 700;">Download PDF</a></td>
+        <td><a href="${d.file_url}" target="_blank" class="btn-download-pdf">Download PDF</a></td>
       </tr>
     `).join("");
   };
