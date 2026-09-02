@@ -11,20 +11,83 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- Cache-Busted Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.0.0">
+  <link rel="stylesheet" href="css/style.css?v=4.0.0">
 </head>
 <body>
 
-  <!-- [01] Top Utility Bar -->
+  <!-- [00] USWDS/SGDS Style Official Government Verification Banner -->
+  <div id="ph-gov-banner" class="official-gov-banner" aria-label="Official Government Banner">
+    <div class="gov-banner-container">
+      <div class="gov-banner-text">
+        <span class="gov-flag-icon" aria-hidden="true">🇵🇭</span>
+        <span>
+          <strong>Isang opisyal na website ng Pamahalaang Lokal sa Pilipinas</strong>
+          <span class="gov-banner-sub">| An official Philippine LGU website</span>
+        </span>
+      </div>
+
+      <button type="button" 
+              id="gov-banner-toggle" 
+              aria-expanded="false" 
+              aria-controls="gov-banner-details" 
+              class="gov-banner-btn">
+        <span>Paano malalaman / How you know</span>
+        <svg id="gov-banner-chevron" class="gov-chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Collapsible Verification Panel -->
+    <div id="gov-banner-details" class="gov-banner-details" hidden>
+      <div class="gov-banner-details-grid">
+        <div class="gov-verify-card">
+          <div class="gov-verify-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+          </div>
+          <div>
+            <strong>Opisyal na Domain (.gov.ph)</strong>
+            <p>Ang mga opisyal na website ng pamahalaan sa Pilipinas ay nagtatapos sa <strong>.gov.ph</strong>. Siguraduhing nasa opisyal na domain ka bago magbigay ng sensitibong impormasyon.</p>
+          </div>
+        </div>
+
+        <div class="gov-verify-card">
+          <div class="gov-verify-icon lock">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <strong>Ligtas na Encrypted Koneksyon (HTTPS)</strong>
+            <p>Tingnan ang lock icon sa browser address bar. Ang <strong>https://</strong> ay nagpapatunay na naka-encrypt at ligtas ang iyong datos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [01] Top Utility & Accessibility Bar -->
   <div class="top-gov-bar">
     <div class="top-gov-container">
       <div class="gov-brand">
         <span class="seal-badge">GOV.PH</span>
         <span>Republic of the Philippines | Province of Cavite</span>
       </div>
-      <div class="clock-display">
-        <span>Philippine Standard Time:</span>
-        <strong id="pst-clock">PST (UTC+8)</strong>
+
+      <!-- Accessibility & Time Controls -->
+      <div class="utility-controls-group">
+        <div class="a11y-btn-group" aria-label="Accessibility Text Resize">
+          <span class="a11y-label">Text Size:</span>
+          <button type="button" id="btn-font-decrease" class="a11y-btn" title="Decrease font size">A-</button>
+          <button type="button" id="btn-font-reset" class="a11y-btn" title="Reset font size">A</button>
+          <button type="button" id="btn-font-increase" class="a11y-btn" title="Increase font size">A+</button>
+          <button type="button" id="btn-high-contrast" class="a11y-btn contrast-toggle" title="Toggle high contrast mode">
+            <span>High Contrast</span>
+          </button>
+        </div>
+
+        <div class="clock-display">
+          <span>Philippine Standard Time:</span>
+          <strong id="pst-clock">PST (UTC+8)</strong>
+        </div>
       </div>
     </div>
   </div>
@@ -81,6 +144,20 @@
   </nav>
 
   <main>
+    <!-- [04.5] Universal One-Search Hero Banner -->
+    <section class="universal-search-hero" aria-label="Universal Portal Search">
+      <div class="universal-search-box">
+        <label for="universal-search-input" class="search-label-title">
+          <svg style="width:22px;height:22px;fill:var(--color-primary);" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          Search Municipal Portal Services &amp; Procurement Tenders
+        </label>
+        <div class="search-input-wrapper">
+          <input type="text" id="universal-search-input" class="universal-input" placeholder="Type service, clearance, or bid title (e.g. BPLO, Tax, School, Building)...">
+          <button type="button" id="universal-search-clear" class="search-clear-btn" title="Clear search">&times;</button>
+        </div>
+      </div>
+    </section>
+
     <!-- [05] Executive Hero Section (Asymmetrical Split Grid) -->
     <section id="about" class="executive-hero">
       <div id="lgu-overview">
@@ -247,7 +324,7 @@
       <p style="margin-bottom: 1.25rem; font-size: var(--text-xs); color: var(--text-muted);">
         Click any service row to open the complete step-by-step application workflow, required documents checklist, and official fees breakdown.
       </p>
-      <input type="text" id="charter-search" class="search-input" placeholder="Search service name, office, or clearance code (e.g. BPLO, Tax, Health, Permit)...">
+      <input type="text" id="charter-search" class="search-input" placeholder="Filter ARTA services by name or code...">
       <div class="table-responsive">
         <table>
           <thead>

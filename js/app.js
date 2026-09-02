@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Start live PST clock
+  // Initialize interactive utility modules
   initPSTClock();
+  initGovBannerToggle();
+  initAccessibilityEngine();
+  initUniversalSearch();
 
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
@@ -25,6 +28,102 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Failed to load LGU data:", err);
   }
 });
+
+// Official Government Banner Accordion Toggle
+function initGovBannerToggle() {
+  const toggleBtn = document.getElementById("gov-banner-toggle");
+  const detailsPanel = document.getElementById("gov-banner-details");
+  if (!toggleBtn || !detailsPanel) return;
+
+  toggleBtn.addEventListener("click", () => {
+    const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+    toggleBtn.setAttribute("aria-expanded", !isExpanded);
+    detailsPanel.hidden = isExpanded;
+  });
+}
+
+// Accessibility Text Resize & High Contrast Engine
+function initAccessibilityEngine() {
+  const root = document.documentElement;
+  const btnDecrease = document.getElementById("btn-font-decrease");
+  const btnReset = document.getElementById("btn-font-reset");
+  const btnIncrease = document.getElementById("btn-font-increase");
+  const btnContrast = document.getElementById("btn-high-contrast");
+
+  // Load saved preferences
+  const savedScale = localStorage.getItem("lgu_text_scale") || "normal";
+  const savedContrast = localStorage.getItem("lgu_high_contrast") === "true";
+
+  const setScale = (scaleClass) => {
+    root.classList.remove("text-scale-sm", "text-scale-lg", "text-scale-xl");
+    if (scaleClass !== "normal") root.classList.add(scaleClass);
+    localStorage.setItem("lgu_text_scale", scaleClass);
+  };
+
+  if (savedScale !== "normal") setScale(savedScale);
+  if (savedContrast) root.classList.add("high-contrast");
+
+  if (btnDecrease) btnDecrease.addEventListener("click", () => setScale("text-scale-sm"));
+  if (btnReset) btnReset.addEventListener("click", () => setScale("normal"));
+  if (btnIncrease) btnIncrease.addEventListener("click", () => setScale("text-scale-lg"));
+
+  if (btnContrast) {
+    btnContrast.addEventListener("click", () => {
+      const isContrast = root.classList.toggle("high-contrast");
+      localStorage.setItem("lgu_high_contrast", isContrast);
+      showToast(isContrast ? "High contrast mode enabled" : "Standard contrast restored");
+    });
+  }
+}
+
+// Universal Search Bar Filtering
+function initUniversalSearch() {
+  const searchInput = document.getElementById("universal-search-input");
+  const clearBtn = document.getElementById("universal-search-clear");
+  if (!searchInput) return;
+
+  const performFilter = (query) => {
+    const q = query.toLowerCase().trim();
+
+    if (clearBtn) {
+      clearBtn.classList.toggle("active", q.length > 0);
+    }
+
+    // Filter Citizen's Charter table
+    if (window.charterServicesData) {
+      const filteredCharter = q === "" 
+        ? window.charterServicesData 
+        : window.charterServicesData.filter(s =>
+            s.service_name.toLowerCase().includes(q) ||
+            s.office.toLowerCase().includes(q) ||
+            s.id.toLowerCase().includes(q) ||
+            s.classification.toLowerCase().includes(q)
+          );
+      renderCharterRows(filteredCharter);
+    }
+
+    // Filter BAC Procurement table
+    if (window.bacNoticesData) {
+      const filteredBAC = q === ""
+        ? window.bacNoticesData
+        : window.bacNoticesData.filter(b =>
+            b.title.toLowerCase().includes(q) ||
+            b.category.toLowerCase().includes(q)
+          );
+      renderBACRows(filteredBAC);
+    }
+  };
+
+  searchInput.addEventListener("input", (e) => performFilter(e.target.value));
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      performFilter("");
+      searchInput.focus();
+    });
+  }
+}
 
 function initPSTClock() {
   const clockElem = document.getElementById("pst-clock");
@@ -122,45 +221,52 @@ function showToast(message) {
 }
 
 function renderCitizensCharter(charter) {
-  const tbody = document.getElementById("charter-table-body");
-  if (!tbody || !charter.services) return;
-
-  const renderRows = (services) => {
-    tbody.innerHTML = services.map(s => {
-      let badgeClass = "badge-simple";
-      if (s.classification === "Complex") badgeClass = "badge-complex";
-      if (s.classification === "Highly Technical") badgeClass = "badge-technical";
-
-      return `
-        <tr class="interactive-row" onclick="openCharterModal('${s.id}')">
-          <td><strong>${s.id}</strong></td>
-          <td><strong style="color:var(--color-primary);">${s.service_name}</strong></td>
-          <td>${s.office}</td>
-          <td><span class="badge ${badgeClass}">${s.classification}</span></td>
-          <td>${s.processing_time}</td>
-          <td>${s.fees}</td>
-        </tr>
-      `;
-    }).join("");
-  };
-
-  renderRows(charter.services);
-
-  // Global reference for modal lookup
+  if (!charter || !charter.services) return;
+  window.charterServicesData = charter.services;
   window.charterServicesMap = new Map(charter.services.map(s => [s.id, s]));
+  renderCharterRows(charter.services);
 
-  const searchInput = document.getElementById("charter-search");
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      const q = e.target.value.toLowerCase();
-      const filtered = charter.services.filter(s =>
-        s.service_name.toLowerCase().includes(q) ||
-        s.office.toLowerCase().includes(q) ||
-        s.id.toLowerCase().includes(q)
-      );
-      renderRows(filtered);
+  const localSearchInput = document.getElementById("charter-search");
+  if (localSearchInput) {
+    localSearchInput.addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = q === "" 
+        ? charter.services 
+        : charter.services.filter(s =>
+            s.service_name.toLowerCase().includes(q) ||
+            s.office.toLowerCase().includes(q) ||
+            s.id.toLowerCase().includes(q)
+          );
+      renderCharterRows(filtered);
     });
   }
+}
+
+function renderCharterRows(services) {
+  const tbody = document.getElementById("charter-table-body");
+  if (!tbody) return;
+
+  if (!services || services.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No matching services found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = services.map(s => {
+    let badgeClass = "badge-simple";
+    if (s.classification === "Complex") badgeClass = "badge-complex";
+    if (s.classification === "Highly Technical") badgeClass = "badge-technical";
+
+    return `
+      <tr class="interactive-row" onclick="openCharterModal('${s.id}')">
+        <td><strong>${s.id}</strong></td>
+        <td><strong style="color:var(--color-primary);">${s.service_name}</strong></td>
+        <td>${s.office}</td>
+        <td><span class="badge ${badgeClass}">${s.classification}</span></td>
+        <td>${s.processing_time}</td>
+        <td>${s.fees}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function openCharterModal(serviceId) {
@@ -219,19 +325,26 @@ function initModalHandlers() {
 }
 
 function renderBACNotices(fdp) {
-  const tbody = document.getElementById("bac-table-body");
-  if (!tbody || !fdp.documents) return;
+  if (!fdp || !fdp.documents) return;
 
   const bacDocs = fdp.documents.filter(d =>
     d.category === "Bids and Awards" || d.title.toLowerCase().includes("invitation to bid")
   );
 
-  if (bacDocs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5">No active procurement notices at this time.</td></tr>`;
+  window.bacNoticesData = bacDocs;
+  renderBACRows(bacDocs);
+}
+
+function renderBACRows(docs) {
+  const tbody = document.getElementById("bac-table-body");
+  if (!tbody) return;
+
+  if (!docs || docs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No active procurement notices matching query.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = bacDocs.map((d, idx) => `
+  tbody.innerHTML = docs.map((d, idx) => `
     <tr>
       <td><strong>TNZ-BAC-2025-0${idx + 1}</strong></td>
       <td><strong style="color:var(--color-primary);">${d.title}</strong></td>
