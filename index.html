@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Municipality of Tanza, Cavite - Official LGU Digital Portal</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3.0.0">
 </head>
 <body>
 
@@ -16,22 +19,34 @@
         <span>Republic of the Philippines | Province of Cavite</span>
       </div>
       <div class="clock-display">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
         <span>Standard Time:</span>
         <strong id="pst-clock">PST (UTC+8)</strong>
       </div>
     </div>
   </div>
 
-  <!-- [02] Glassmorphic Header -->
+  <!-- [02] Glassmorphic Header & LGU Seal Identity -->
   <header>
     <div class="header-container">
-      <div class="lgu-title" id="lgu-header-info">
-        <h1>Municipality of Tanza</h1>
-        <p>
-          <span>Province of Cavite</span> | 
-          <span>Region IV-A (CALABARZON)</span> | 
-          <span class="psgc-pill">PSGC 0402120000</span>
-        </p>
+      <div class="header-brand-group">
+        <!-- Official Tanza LGU Emblem SVG -->
+        <svg class="lgu-seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Official Seal of the Municipality of Tanza">
+          <circle cx="50" cy="50" r="48" fill="#1e3a8a" stroke="#f59e0b" stroke-width="4"/>
+          <circle cx="50" cy="50" r="40" fill="#0b1329" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 2"/>
+          <path d="M50 20 L54 32 L66 32 L56 40 L60 52 L50 44 L40 52 L44 40 L34 32 L46 32 Z" fill="#f59e0b"/>
+          <path d="M20 65 Q 50 50, 80 65 Q 50 80, 20 65 Z" fill="#0369a1" opacity="0.8"/>
+          <path d="M25 72 Q 50 60, 75 72" stroke="#f59e0b" stroke-width="3" fill="none"/>
+          <text x="50" y="88" text-anchor="middle" fill="#ffffff" font-size="8" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" letter-spacing="1">TANZA • CAVITE</text>
+        </svg>
+        <div class="lgu-title" id="lgu-header-info">
+          <h1>Municipality of Tanza</h1>
+          <p>
+            <span>Province of Cavite</span> | 
+            <span>Region IV-A (CALABARZON)</span> | 
+            <span class="psgc-pill">PSGC 0402120000</span>
+          </p>
+        </div>
       </div>
     </div>
   </header>
@@ -64,8 +79,11 @@
     <section id="about" class="executive-hero">
       <div id="lgu-overview">
         <div class="executive-hero-header">
-          <span class="executive-badge">Serbisyo sa Mamamayan</span>
-          <h2>Message from the Municipal Mayor</h2>
+          <div class="mayor-avatar-badge" aria-label="Mayor Archangelo Matro Initials Badge">AM</div>
+          <div>
+            <span class="executive-badge">Serbisyo sa Mamamayan</span>
+            <h2 style="font-size: var(--text-lg); margin-top: 0.2rem;">Message from the Municipal Mayor</h2>
+          </div>
         </div>
         <div class="executive-quote" id="mayor-message-box">
           Loading executive message...
@@ -93,7 +111,7 @@
       </div>
     </section>
 
-    <!-- [06] Core Public Services Bento Grid -->
+    <!-- [06] Core Public Services Bento Grid with Inline SVGs -->
     <section id="services" style="margin-bottom: 2.5rem;">
       <div class="section-title-group">
         <h2>Core Public Services &amp; Digital Portals</h2>
@@ -101,32 +119,87 @@
       </div>
 
       <div class="service-actions-grid">
+        <!-- 1. BPLO Business Permit -->
         <a href="#charter" class="action-card">
-          <span class="card-badge">ARTA Compliant</span>
-          <h3>🏢 Business Permits (BPLO)</h3>
+          <div class="action-card-header">
+            <div class="action-card-icon" style="background: #dcfce7; color: #16a34a;">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+            </div>
+            <div>
+              <span class="badge badge-simple">ARTA Fast Track</span>
+              <h3>Business Permits (BPLO)</h3>
+            </div>
+          </div>
           <p>Apply or renew municipal business clearance, licenses, and Mayor's permit.</p>
         </a>
+
+        <!-- 2. Real Property Tax -->
         <a href="#charter" class="action-card">
-          <span class="card-badge">Fast Track</span>
-          <h3>📜 Real Property Tax</h3>
+          <div class="action-card-header">
+            <div class="action-card-icon" style="background: #fef3c7; color: #d97706;">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            </div>
+            <div>
+              <span class="badge badge-complex">Treasury Clearance</span>
+              <h3>Real Property Tax</h3>
+            </div>
+          </div>
           <p>Request property tax declarations, assessments, and municipal tax clearances.</p>
         </a>
+
+        <!-- 3. Health Office -->
         <a href="#charter" class="action-card">
-          <span class="card-badge">Public Health</span>
-          <h3>🏥 Health Office (MHO)</h3>
+          <div class="action-card-header">
+            <div class="action-card-icon" style="background: #ffe4e6; color: #e11d48;">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+            </div>
+            <div>
+              <span class="badge badge-technical">RHU / MHO Care</span>
+              <h3>Health Office (MHO)</h3>
+            </div>
+          </div>
           <p>Health certificates, medical clearances, sanitary permits, and consultations.</p>
         </a>
-        
-        <!-- Bento Highlight Card (Spans 2 columns) -->
-        <a href="#bac" class="action-card bento-highlight">
-          <span class="card-badge" style="background: #fef3c7; color: var(--color-accent-hover);">RA 9184 Procurement</span>
-          <h3>🏗️ Bids &amp; Awards Committee (BAC) Notices</h3>
+
+        <!-- 4. Civil Registry -->
+        <a href="#charter" class="action-card">
+          <div class="action-card-header">
+            <div class="action-card-icon" style="background: #e0e7ff; color: #4338ca;">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div>
+              <span class="badge badge-simple">Vital Statistics</span>
+              <h3>Civil Registry</h3>
+            </div>
+          </div>
+          <p>Issuance of birth certificates, marriage licenses, and official death certificates.</p>
+        </a>
+
+        <!-- 5. BAC Procurement Spotlight (Spans 2 columns) -->
+        <a href="#bac" class="action-card feature-span">
+          <div class="action-card-header">
+            <div class="action-card-icon">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </div>
+            <div>
+              <span class="badge" style="background: #fef3c7; color: #b45309;">RA 9184 Procurement</span>
+              <h3 style="color: #ffffff;">Bids &amp; Awards Committee (BAC) Notices</h3>
+            </div>
+          </div>
           <p>Explore active invitations to bid, infrastructure projects, school rehabilitation, and public procurement opportunities.</p>
         </a>
 
+        <!-- 6. Full Disclosure Portal -->
         <a href="#fdp" class="action-card">
-          <span class="card-badge">DILG Transparency</span>
-          <h3>📊 Full Disclosure Portal</h3>
+          <div class="action-card-header">
+            <div class="action-card-icon" style="background: #e0f2fe; color: #0284c7;">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2v-10h2v10zm4 0h-2v-4h2v4z"/></svg>
+            </div>
+            <div>
+              <span class="badge badge-active">DILG Transparency</span>
+              <h3>Full Disclosure Portal</h3>
+            </div>
+          </div>
           <p>Access quarterly municipal executive budgets, SEF reports, and 20% development funds.</p>
         </a>
       </div>
@@ -236,8 +309,11 @@
 
   <!-- [11] Citizen's Charter Service Details Modal Drawer -->
   <div id="charter-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
-    <div class="modal-card">
-      <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+    <div class="modal-card modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title">Service Details</h3>
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
       <div id="modal-content">
         <!-- Content dynamically inserted via js/app.js -->
       </div>

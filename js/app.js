@@ -25,14 +25,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-/* Live PST Clock Updater */
+/* Live PST Clock Updater (ticks every 1s) */
 function startPSTClock() {
   const clockElem = document.getElementById("pst-clock");
   if (!clockElem) return;
 
   const updateClock = () => {
     const now = new Date();
-    // Format to Philippine Standard Time (UTC+8)
     const options = {
       timeZone: "Asia/Manila",
       hour: "2-digit",
@@ -65,7 +64,8 @@ function renderLGUHeader(lgu) {
     mayorBox.innerHTML = `
       <p>"${lgu.mayor.message}"</p>
       <div class="executive-signature">
-        — ${lgu.mayor.name}, ${lgu.mayor.title || 'Municipal Mayor'} (${lgu.mayor.term})
+        <span>— ${lgu.mayor.name}, ${lgu.mayor.title || 'Municipal Mayor'} (${lgu.mayor.term})</span>
+        <span style="color: var(--color-accent-hover); font-weight: 800; font-size: 0.8rem;">OFFICIAL EXECUTIVE STATEMENT</span>
       </div>
     `;
   }
@@ -79,9 +79,9 @@ function renderEmergencyContacts(emergency) {
     <li class="emergency-item">
       <div>
         <strong>${h.agency}</strong><br>
-        <span class="phone-number">${h.phone}</span> ${h.landline ? `<span class="landline-text">| ${h.landline}</span>` : ''}
+        <span class="phone-number">${h.phone}</span> ${h.landline ? `<span style="color: var(--text-muted); font-size: var(--text-xs);">| ${h.landline}</span>` : ''}
       </div>
-      <div class="emergency-actions">
+      <div class="btn-group-hotline">
         <button class="btn-copy" onclick="copyHotline('${h.phone}', this)" aria-label="Copy ${h.agency} number">Copy</button>
         <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
       </div>
@@ -118,11 +118,13 @@ function fallbackCopy(text, btnElem) {
 function showCopiedFeedback(btnElem) {
   const origText = btnElem.textContent;
   btnElem.textContent = "Copied!";
-  btnElem.classList.add("copied");
+  btnElem.style.background = "#dcfce7";
+  btnElem.style.color = "#15803d";
   showToast("Phone number copied to clipboard!");
   setTimeout(() => {
     btnElem.textContent = origText;
-    btnElem.classList.remove("copied");
+    btnElem.style.background = "";
+    btnElem.style.color = "";
   }, 2000);
 }
 
@@ -131,13 +133,13 @@ function showToast(msg) {
   if (!toast) {
     toast = document.createElement("div");
     toast.id = "toast-notification";
-    toast.className = "toast";
+    toast.className = "toast-notification";
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
-  toast.classList.add("show");
+  toast.classList.add("active");
   setTimeout(() => {
-    toast.classList.remove("show");
+    toast.classList.remove("active");
   }, 2500);
 }
 
@@ -157,20 +159,19 @@ function renderCitizensCharter(charter) {
       if (s.classification === "Highly Technical") badgeClass = "badge-technical";
 
       return `
-        <tr class="charter-row" data-id="${s.id}" tabindex="0" role="button" aria-label="View details for ${s.service_name}">
+        <tr class="interactive-row" data-id="${s.id}" tabindex="0" role="button" aria-label="View details for ${s.service_name}">
           <td><strong>${s.id}</strong></td>
           <td><strong>${s.service_name}</strong></td>
           <td>${s.office}</td>
           <td><span class="badge ${badgeClass}">${s.classification}</span></td>
           <td>${s.processing_time}</td>
           <td>${s.fees}</td>
-          <td><button class="btn-view-details">View Details &rarr;</button></td>
+          <td><button class="btn-copy" style="background: var(--color-primary-light); color: #fff;">Details &rarr;</button></td>
         </tr>
       `;
     }).join("");
 
-    // Attach click and keyboard accessibility handlers
-    tbody.querySelectorAll(".charter-row").forEach(row => {
+    tbody.querySelectorAll(".interactive-row").forEach(row => {
       const serviceId = row.getAttribute("data-id");
       const service = charter.services.find(s => s.id === serviceId);
 
@@ -204,104 +205,90 @@ function renderCitizensCharter(charter) {
   }
 }
 
-function openCharterModal(s) {
+function openCharterModal(service) {
   const modal = document.getElementById("charter-modal");
-  const content = document.getElementById("modal-content");
-  if (!modal || !content) return;
+  const modalTitle = document.getElementById("modal-title");
+  const modalContent = document.getElementById("modal-content");
+  if (!modal || !modalContent) return;
 
-  let badgeClass = "badge-simple";
-  if (s.classification === "Complex") badgeClass = "badge-complex";
-  if (s.classification === "Highly Technical") badgeClass = "badge-technical";
+  if (modalTitle) {
+    modalTitle.textContent = `${service.id} - ${service.service_name}`;
+  }
 
-  const docsList = (s.required_documents || []).map(d => `<li>${d}</li>`).join("");
-  const stepsList = (s.steps || []).map(step => `<li>${step}</li>`).join("");
+  const docsList = (service.required_documents || ["Duly accomplished application form", "Valid Government-Issued ID"])
+    .map(doc => `<li>${doc}</li>`).join("");
 
-  content.innerHTML = `
-    <div style="margin-bottom: 1rem;">
-      <span class="badge ${badgeClass}">${s.classification} Service</span>
-      <span style="font-size: var(--text-xs); color: var(--text-muted); margin-left: 0.5rem;">Code: <strong>${s.id}</strong></span>
-    </div>
-    <h3 id="modal-title" style="font-size: var(--text-lg); color: var(--color-primary-dark); margin-bottom: 0.5rem; font-weight: 800;">${s.service_name}</h3>
-    <p style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 1.25rem;">
-      <strong>Responsible Office:</strong> ${s.office}
-    </p>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: var(--bg-card-alt); padding: 1rem; border-radius: var(--radius-md);">
-      <div>
-        <strong style="font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">Processing Time:</strong>
-        <div style="font-weight: 700; color: var(--color-primary); font-size: var(--text-sm); margin-top: 0.2rem;">${s.processing_time}</div>
+  const stepsList = (service.steps || ["Submit application at front desk", "Assessment and verification", "Payment at Treasury", "Issuance of clearance/permit"])
+    .map((step, idx) => `
+      <div style="display: flex; gap: 0.85rem; align-items: flex-start; margin-bottom: 0.75rem;">
+        <span style="width: 28px; height: 28px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0;">${idx + 1}</span>
+        <div style="background: var(--bg-card-alt); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: var(--text-sm); flex-grow: 1; border-left: 3px solid var(--color-primary-light);">${step}</div>
       </div>
-      <div>
-        <strong style="font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">Applicable Fees:</strong>
-        <div style="font-weight: 700; color: var(--color-primary-dark); font-size: var(--text-sm); margin-top: 0.2rem;">${s.fees}</div>
+    `).join("");
+
+  modalContent.innerHTML = `
+    <div class="modal-section">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <span class="badge badge-active">Office: ${service.office}</span>
+        <span class="badge badge-simple">Time: ${service.processing_time}</span>
+        <span class="badge badge-complex">Fees: ${service.fees}</span>
       </div>
     </div>
 
-    <div style="margin-bottom: 1.25rem;">
-      <h4 style="font-size: var(--text-base); color: var(--color-primary-dark); margin-bottom: 0.5rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.25rem; font-weight: 700;">Required Application Documents</h4>
-      <ul style="padding-left: 1.25rem; font-size: var(--text-sm); color: var(--text-main); line-height: 1.6;">
-        ${docsList || "<li>No specific document checklist listed.</li>"}
-      </ul>
+    <div class="modal-section">
+      <h4>Required Documents</h4>
+      <ul class="modal-list">${docsList}</ul>
     </div>
 
-    ${stepsList ? `
-      <div>
-        <h4 style="font-size: var(--text-base); color: var(--color-primary-dark); margin-bottom: 0.5rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.25rem; font-weight: 700;">Step-by-Step Procedure</h4>
-        <ol style="padding-left: 1.25rem; font-size: var(--text-sm); color: var(--text-main); line-height: 1.6;">
-          ${stepsList}
-        </ol>
-      </div>
-    ` : ""}
+    <div class="modal-section">
+      <h4>Step-by-Step Procedure</h4>
+      <div>${stepsList}</div>
+    </div>
   `;
 
-  modal.classList.add("open");
+  modal.classList.add("active");
   modal.setAttribute("aria-hidden", "false");
 }
 
 function setupModalHandlers() {
   const modal = document.getElementById("charter-modal");
   const closeBtn = document.getElementById("modal-close-btn");
-  if (!modal) return;
 
-  const closeModal = () => {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-  };
+  if (closeBtn && modal) {
+    closeBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+    });
+  }
 
-  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+      }
+    });
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.classList.contains("open")) {
-      closeModal();
-    }
-  });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+      }
+    });
+  }
 }
 
 function renderBACNotices(fdp) {
   const tbody = document.getElementById("bac-table-body");
-  if (!tbody || !fdp.documents) return;
+  if (!tbody || !fdp.bac_notices) return;
 
-  const bacDocs = fdp.documents.filter(d => 
-    (d.category && d.category.toLowerCase().includes("bids")) ||
-    (d.id && d.id.startsWith("BAC"))
-  );
-
-  if (bacDocs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No active BAC notices published.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = bacDocs.map(d => `
+  tbody.innerHTML = fdp.bac_notices.map(n => `
     <tr>
-      <td><strong>${d.id}</strong></td>
-      <td><strong>${d.title}</strong></td>
-      <td>${d.publication_date}</td>
-      <td><span class="badge badge-published">${d.status}</span></td>
-      <td><a href="${d.file_url}" target="_blank" class="btn-download-pdf">View Notice PDF</a></td>
+      <td><strong>${n.id}</strong></td>
+      <td><strong>${n.title}</strong></td>
+      <td>${n.publication_date}</td>
+      <td><span class="badge badge-simple">${n.status || 'Active Bidding'}</span></td>
+      <td><a href="${n.file_url}" target="_blank" style="color: var(--color-primary-light); font-weight: 700; text-decoration: none;">View Invitation &rarr;</a></td>
     </tr>
   `).join("");
 }
@@ -339,7 +326,7 @@ function renderFDPDocuments(fdp) {
         <td><strong>${d.category}</strong></td>
         <td>${d.title}</td>
         <td>${d.publication_date}</td>
-        <td><a href="${d.file_url}" target="_blank" class="btn-download-pdf">Download PDF</a></td>
+        <td><a href="${d.file_url}" target="_blank" style="color: var(--color-primary-light); font-weight: 700; text-decoration: none;">Download PDF &rarr;</a></td>
       </tr>
     `).join("");
   };
