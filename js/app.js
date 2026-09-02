@@ -26,16 +26,33 @@ function renderLGUHeader(lgu) {
   if (headerElem) {
     headerElem.innerHTML = `
       <h1>${lgu.lgu_name}</h1>
-      <p>${lgu.province}, ${lgu.region} | ${lgu.income_class} ${lgu.lgu_level}</p>
+      <p>${lgu.province}, ${lgu.region} | ${lgu.income_class} ${lgu.lgu_level} | PSGC ${lgu.psgc_code}</p>
     `;
   }
 
   const overviewElem = document.getElementById("lgu-overview");
   if (overviewElem && lgu.overview) {
     overviewElem.innerHTML = `
-      <h3>Welcome to ${lgu.lgu_name}</h3>
-      <p>${lgu.overview}</p>
-      ${lgu.population ? `<p><strong>Population (2020 Census):</strong> ${lgu.population.toLocaleString()}</p>` : ''}
+      <h2>Welcome to ${lgu.lgu_name}</h2>
+      <p style="font-size: 1.05rem; margin-bottom: 1rem;">${lgu.overview}</p>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value">${lgu.population ? lgu.population.toLocaleString() : '339,308'}</div>
+          <div class="stat-label">Population (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${lgu.income_class || '1st Class'}</div>
+          <div class="stat-label">Income Class</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${lgu.area_sq_km || '78.33'} km²</div>
+          <div class="stat-label">Land Area</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">41</div>
+          <div class="stat-label">Barangays</div>
+        </div>
+      </div>
     `;
   }
 
@@ -54,8 +71,11 @@ function renderEmergencyContacts(emergency) {
 
   container.innerHTML = emergency.hotlines.map(h => `
     <li class="emergency-item">
-      <strong>${h.agency}:</strong> 
-      <span class="phone-number">${h.phone}</span> / ${h.landline}
+      <div>
+        <strong>${h.agency}</strong><br>
+        <span class="phone-number">${h.phone}</span> (${h.landline})
+      </div>
+      <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
     </li>
   `).join("");
 }
@@ -65,16 +85,22 @@ function renderCitizensCharter(charter) {
   if (!tbody || !charter.services) return;
 
   const renderRows = (services) => {
-    tbody.innerHTML = services.map(s => `
-      <tr>
-        <td><strong>${s.id}</strong></td>
-        <td>${s.service_name}</td>
-        <td>${s.office}</td>
-        <td>${s.classification}</td>
-        <td>${s.processing_time}</td>
-        <td>${s.fees}</td>
-      </tr>
-    `).join("");
+    tbody.innerHTML = services.map(s => {
+      let badgeClass = "badge-simple";
+      if (s.classification === "Complex") badgeClass = "badge-complex";
+      if (s.classification === "Highly Technical") badgeClass = "badge-technical";
+
+      return `
+        <tr>
+          <td><strong>${s.id}</strong></td>
+          <td>${s.service_name}</td>
+          <td>${s.office}</td>
+          <td><span class="badge ${badgeClass}">${s.classification}</span></td>
+          <td>${s.processing_time}</td>
+          <td>${s.fees}</td>
+        </tr>
+      `;
+    }).join("");
   };
 
   renderRows(charter.services);
@@ -95,14 +121,41 @@ function renderCitizensCharter(charter) {
 
 function renderFDPDocuments(fdp) {
   const tbody = document.getElementById("fdp-table-body");
+  const tabContainer = document.getElementById("fdp-tabs");
   if (!tbody || !fdp.documents) return;
 
-  tbody.innerHTML = fdp.documents.map(d => `
-    <tr>
-      <td>${d.category}</td>
-      <td>${d.title}</td>
-      <td>${d.publication_date}</td>
-      <td><a href="${d.file_url}" target="_blank">Download PDF</a></td>
-    </tr>
-  `).join("");
+  const categories = ["All", ...new Set(fdp.documents.map(d => d.category))];
+
+  if (tabContainer) {
+    tabContainer.innerHTML = categories.map((cat, idx) => `
+      <button class="tab-btn ${idx === 0 ? 'active' : ''}" data-category="${cat}">${cat}</button>
+    `).join("");
+
+    tabContainer.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        tabContainer.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+
+        const selectedCat = e.target.getAttribute("data-category");
+        const filtered = selectedCat === "All"
+          ? fdp.documents
+          : fdp.documents.filter(d => d.category === selectedCat);
+
+        renderFDPRows(filtered);
+      });
+    });
+  }
+
+  const renderFDPRows = (docs) => {
+    tbody.innerHTML = docs.map(d => `
+      <tr>
+        <td><strong>${d.category}</strong></td>
+        <td>${d.title}</td>
+        <td>${d.publication_date}</td>
+        <td><a href="${d.file_url}" target="_blank" style="color: var(--primary); font-weight: 700;">Download PDF</a></td>
+      </tr>
+    `).join("");
+  };
+
+  renderFDPRows(fdp.documents);
 }
