@@ -11,9 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- Cache-Busted Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=5.0.0">
+  <link rel="stylesheet" href="css/style.css?v=6.0.0">
 </head>
 <body>
+
+  <!-- Ambient Background Glow Orbs for Glassmorphism Depth -->
+  <div class="hero-orb orb-1" aria-hidden="true"></div>
+  <div class="hero-orb orb-2" aria-hidden="true"></div>
 
   <!-- [00] USWDS/SGDS Style Official Government Verification Banner -->
   <div id="ph-gov-banner" class="official-gov-banner" aria-label="Official Government Banner">
@@ -96,16 +100,19 @@
   <header>
     <div class="header-container">
       <div class="header-brand-group">
-        <!-- Official Tanza LGU Seal SVG Emblem -->
-        <svg class="lgu-seal-svg" viewBox="0 0 100 100" aria-label="Official Seal of Tanza, Cavite">
-          <circle cx="50" cy="50" r="48" fill="#1e3a8a" stroke="#f59e0b" stroke-width="4"/>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <path d="M50 12 L53 22 L63 18 L60 28 L70 30 L62 38 L70 44 L59 47 L63 58 L52 53 L50 64 L48 53 L37 58 L41 47 L30 44 L38 38 L30 30 L40 28 L37 18 L47 22 Z" fill="#f59e0b"/>
-          <path d="M20 65 Q 50 50 80 65 Q 50 80 20 65 Z" fill="#0284c7" opacity="0.8"/>
-          <path d="M25 72 Q 50 60 75 72 Q 50 85 25 72 Z" fill="#2563eb" opacity="0.9"/>
-          <circle cx="50" cy="40" r="12" fill="#fef08a"/>
-          <text x="50" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">TANZA • CAVITE</text>
-        </svg>
+        <!-- 3D Interactive Canvas & Official Tanza LGU Seal SVG Emblem -->
+        <div class="seal-3d-wrapper">
+          <canvas id="hero-3d-canvas" class="hero-3d-canvas" width="100" height="100" aria-label="Interactive 3D Seal Emblem"></canvas>
+          <svg class="lgu-seal-svg" viewBox="0 0 100 100" aria-label="Official Seal of Tanza, Cavite">
+            <circle cx="50" cy="50" r="48" fill="#1e3a8a" stroke="#f59e0b" stroke-width="4"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <path d="M50 12 L53 22 L63 18 L60 28 L70 30 L62 38 L70 44 L59 47 L63 58 L52 53 L50 64 L48 53 L37 58 L41 47 L30 44 L38 38 L30 30 L40 28 L37 18 L47 22 Z" fill="#f59e0b"/>
+            <path d="M20 65 Q 50 50 80 65 Q 50 80 20 65 Z" fill="#0284c7" opacity="0.8"/>
+            <path d="M25 72 Q 50 60 75 72 Q 50 85 25 72 Z" fill="#2563eb" opacity="0.9"/>
+            <circle cx="50" cy="40" r="12" fill="#fef08a"/>
+            <text x="50" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">TANZA • CAVITE</text>
+          </svg>
+        </div>
 
         <div class="lgu-title" id="lgu-header-info">
           <h1>Municipality of Tanza</h1>
@@ -163,7 +170,7 @@
 
     <!-- [05] Executive Hero Section (Asymmetrical Split Grid) -->
     <section id="about" class="executive-hero">
-      <div id="lgu-overview">
+      <div id="lgu-overview" class="glass-card">
         <div class="executive-hero-header">
           <div class="mayor-avatar-badge" title="Mayor Archangelo B. Matro">AM</div>
           <div>
@@ -178,19 +185,19 @@
 
       <!-- Quick Municipal Stats Bento Grid -->
       <div class="stat-grid">
-        <div class="stat-card">
+        <div class="stat-card glass-card">
           <div class="stat-value" data-count="339308">339,308</div>
           <div class="stat-label">Population (2024)</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card glass-card">
           <div class="stat-value">1st Class</div>
           <div class="stat-label">Income Class</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card glass-card">
           <div class="stat-value" data-count="78.33" data-decimals="2" data-suffix=" km²">78.33 km²</div>
           <div class="stat-label">Land Area</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card glass-card">
           <div class="stat-value" data-count="41">41</div>
           <div class="stat-label">Barangays</div>
         </div>
@@ -206,7 +213,7 @@
 
       <div class="service-actions-grid">
         <!-- Card 1: Business Permits -->
-        <a href="#charter" class="action-card">
+        <a href="#charter" class="action-card glass-card">
           <div class="action-card-header">
             <div class="action-card-icon" style="background: #dcfce7; color: #16a34a;">
               <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
@@ -217,7 +224,7 @@
         </a>
 
         <!-- Card 2: Real Property Tax -->
-        <a href="#charter" class="action-card">
+        <a href="#charter" class="action-card glass-card">
           <div class="action-card-header">
             <div class="action-card-icon" style="background: #fef3c7; color: #d97706;">
               <svg viewBox="0 0 24 24"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2zm0 2.84L18 10.8v7.2h-2v-6H8v6H6v-7.2l6-5.96z"/></svg>
@@ -228,7 +235,7 @@
         </a>
 
         <!-- Card 3: Municipal Health Office -->
-        <a href="#charter" class="action-card">
+        <a href="#charter" class="action-card glass-card">
           <div class="action-card-header">
             <div class="action-card-icon" style="background: #fee2e2; color: #dc2626;">
               <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
@@ -239,7 +246,7 @@
         </a>
 
         <!-- Card 4: Civil Registry -->
-        <a href="#charter" class="action-card">
+        <a href="#charter" class="action-card glass-card">
           <div class="action-card-header">
             <div class="action-card-icon" style="background: #f3e8ff; color: #9333ea;">
               <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
@@ -250,7 +257,7 @@
         </a>
 
         <!-- Card 5: BAC Procurement Spotlight (Feature Span) -->
-        <a href="#bac" class="action-card feature-span">
+        <a href="#bac" class="action-card feature-span glass-card">
           <div class="action-card-header">
             <div class="action-card-icon">
               <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
@@ -265,7 +272,7 @@
     <!-- [07] 2-Column Grid: Hotlines & Public Advisory -->
     <div class="grid">
       <!-- 24/7 Emergency Directory -->
-      <section id="emergency" class="card">
+      <section id="emergency" class="card glass-card">
         <h2>
           <svg style="width:24px;height:24px;fill:#dc2626;" viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
           24/7 Emergency Directory
@@ -276,7 +283,7 @@
       </section>
 
       <!-- Public Advisory & Press Releases -->
-      <section id="announcements" class="card">
+      <section id="announcements" class="card glass-card">
         <h2>
           <svg style="width:24px;height:24px;fill:#1e3a8a;" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
           Public Advisory &amp; Notices
@@ -291,7 +298,7 @@
     </div>
 
     <!-- [08] Bids and Awards Committee (BAC) Section -->
-    <section id="bac" class="card" style="margin-bottom: 2.5rem;">
+    <section id="bac" class="card glass-card" style="margin-bottom: 2.5rem;">
       <h2>
         <svg style="width:24px;height:24px;fill:#f59e0b;" viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
         Bids &amp; Awards Committee (BAC) Procurement Opportunities
@@ -319,7 +326,7 @@
     </section>
 
     <!-- [09] ARTA Citizen's Charter Section -->
-    <section id="charter" class="card" style="margin-bottom: 2.5rem;">
+    <section id="charter" class="card glass-card" style="margin-bottom: 2.5rem;">
       <h2>
         <svg style="width:24px;height:24px;fill:#16a34a;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
         ARTA Citizen's Charter Directory (RA 11032)
@@ -348,7 +355,7 @@
     </section>
 
     <!-- [10] DILG Full Disclosure Policy (FDP) Section -->
-    <section id="fdp" class="card">
+    <section id="fdp" class="card glass-card">
       <h2>
         <svg style="width:24px;height:24px;fill:#0284c7;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
         DILG Full Disclosure Policy (FDP) Portal

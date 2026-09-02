@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initAccessibilityEngine();
   initUniversalSearch();
   initStatCounters();
+  init3DLogoCanvas();
+  initMouseSpotlight();
 
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
@@ -460,4 +462,133 @@ function renderFDPDocuments(fdp) {
   };
 
   renderFDPRows(fdp.documents);
+}
+
+// Interactive 3D Canvas Seal Emblem with Gold Particle Physics & Parallax Tilt
+function init3DLogoCanvas() {
+  const canvas = document.getElementById("hero-3d-canvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = canvas.width = 120;
+  let height = canvas.height = 120;
+  const cx = width / 2;
+  const cy = height / 2;
+
+  let angleY = 0;
+  let angleX = 0;
+  let targetAngleX = 0;
+  let targetAngleY = 0;
+
+  // Particle Mesh for Ambient Gold Dust
+  const particleCount = 28;
+  const particles = Array.from({ length: particleCount }, () => ({
+    x: (Math.random() - 0.5) * 90,
+    y: (Math.random() - 0.5) * 90,
+    z: (Math.random() - 0.5) * 90,
+    radius: Math.random() * 1.5 + 0.8,
+    speed: Math.random() * 0.02 + 0.008
+  }));
+
+  // Track Mouse for 3D Parallax Tilt
+  window.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - (rect.left + rect.width / 2);
+    const mouseY = e.clientY - (rect.top + rect.height / 2);
+    targetAngleY = (mouseX / window.innerWidth) * 0.8;
+    targetAngleX = (-mouseY / window.innerHeight) * 0.8;
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Smooth Damping Perspective Interpolation
+    angleX += (targetAngleX - angleX) * 0.08;
+    angleY += (targetAngleY - angleY) * 0.08;
+    const time = Date.now() * 0.0015;
+
+    // Render Outer Rotating 3D Ring Vertices
+    const ringNodes = 12;
+    const ringRadius = 38;
+    const projectedRing = [];
+
+    for (let i = 0; i < ringNodes; i++) {
+      const theta = (i / ringNodes) * Math.PI * 2 + time;
+      let x = Math.cos(theta) * ringRadius;
+      let y = Math.sin(theta) * ringRadius;
+      let z = Math.sin(theta * 2 + time) * 12;
+
+      // 3D Rotation Matrix (X and Y axis)
+      let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+      let cosY = Math.cos(angleY + time * 0.3), sinY = Math.sin(angleY + time * 0.3);
+
+      let x1 = x * cosY - z * sinY;
+      let z1 = z * cosY + x * sinY;
+
+      let y2 = y * cosX - z1 * sinX;
+      let z2 = z1 * cosX + y * sinX;
+
+      const scale = 220 / (220 + z2);
+      projectedRing.push({
+        px: cx + x1 * scale,
+        py: cy + y2 * scale,
+        scale,
+        alpha: Math.max(0.2, (z2 + 40) / 80)
+      });
+    }
+
+    // Draw Connector Beams on 3D Ring
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
+    ctx.lineWidth = 1.2;
+    for (let i = 0; i < ringNodes; i++) {
+      const next = projectedRing[(i + 1) % ringNodes];
+      ctx.moveTo(projectedRing[i].px, projectedRing[i].py);
+      ctx.lineTo(next.px, next.py);
+    }
+    ctx.stroke();
+
+    // Draw Gold Vertices
+    projectedRing.forEach(node => {
+      ctx.beginPath();
+      ctx.arc(node.px, node.py, 2 * node.scale, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(251, 191, 36, ${node.alpha})`;
+      ctx.fill();
+    });
+
+    // Render Ambient Floating Gold Particles
+    particles.forEach(p => {
+      p.z += p.speed;
+      if (p.z > 50) p.z = -50;
+
+      const scale = 200 / (200 + p.z);
+      const px = cx + p.x * scale;
+      const py = cy + p.y * scale;
+
+      ctx.beginPath();
+      ctx.arc(px, py, p.radius * scale, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(245, 158, 11, ${0.4 * scale})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  render();
+}
+
+// Mouse Spotlight Cursor Tracking on Bento Cards
+function initMouseSpotlight() {
+  const cards = document.querySelectorAll(".action-card");
+  cards.forEach(card => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty("--mouse-x", `${x}%`);
+      card.style.setProperty("--mouse-y", `${y}%`);
+    });
+  });
 }
