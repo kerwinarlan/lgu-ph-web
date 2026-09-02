@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
-      fetch("../data/lgu_config.json"),
-      fetch("../data/citizens_charter.json"),
-      fetch("../data/fdp_portal.json"),
-      fetch("../data/emergency_contacts.json")
+      fetch("data/lgu_config.json"),
+      fetch("data/citizens_charter.json"),
+      fetch("data/fdp_portal.json"),
+      fetch("data/emergency_contacts.json")
     ]);
 
     const lgu = await lguRes.json();
@@ -27,6 +27,15 @@ function renderLGUHeader(lgu) {
     headerElem.innerHTML = `
       <h1>${lgu.lgu_name}</h1>
       <p>${lgu.province}, ${lgu.region} | ${lgu.income_class} ${lgu.lgu_level}</p>
+    `;
+  }
+
+  const overviewElem = document.getElementById("lgu-overview");
+  if (overviewElem && lgu.overview) {
+    overviewElem.innerHTML = `
+      <h3>Welcome to ${lgu.lgu_name}</h3>
+      <p>${lgu.overview}</p>
+      ${lgu.population ? `<p><strong>Population (2020 Census):</strong> ${lgu.population.toLocaleString()}</p>` : ''}
     `;
   }
 
@@ -93,7 +102,7 @@ function renderFDPDocuments(fdp) {
       <td>${d.category}</td>
       <td>${d.title}</td>
       <td>${d.publication_date}</td>
-      <td><a href="../${d.file_url}" target="_blank">Download PDF</a></td>
+      <td><a href="${d.file_url}" target="_blank">Download PDF</a></td>
     </tr>
   `).join("");
 }

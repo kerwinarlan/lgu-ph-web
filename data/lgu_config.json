@@ -1,22 +1,24 @@
 {
-  "lgu_name": "Municipality of Sampaloc",
+  "lgu_name": "Municipality of Tanza",
   "lgu_level": "Municipality",
-  "province": "Quezon",
+  "province": "Cavite",
   "region": "Region IV-A (CALABARZON)",
-  "psgc_code": "0405621000",
-  "income_class": "5th Class",
+  "psgc_code": "0421200000",
+  "income_class": "1st Class",
+  "population": 312116,
+  "overview": "Welcome to the official portal of Tanza Municipality, Cavite (Region IV-A). Tanza is a 1st class municipality with a population of 312,116 (2020 Census). This portal provides citizens, businesses, and visitors with public service guides, ARTA Citizen's Charter workflows, DILG Full Disclosure Policy files, and 24/7 emergency contacts.",
   "mayor": {
-    "name": "Hon. Juan D. Dela Cruz",
+    "name": "Hon. Yuri A. Pacumio",
     "term": "2022-2025",
-    "message": "Welcome to the official digital portal of Sampaloc, Quezon."
+    "message": "Welcome to the dedicated portal of Tanza Municipality. We are committed to fast, transparent public service and full DILG/ARTA disclosure."
   },
   "contact": {
-    "address": "Poblacion, Sampaloc, Quezon 4329",
-    "phone": "+63 (042) 555-0123",
-    "email": "info@sampalocquezon.gov.ph",
+    "address": "Municipal Hall, Poblacion, Tanza, Cavite 4108",
+    "phone": "+63 (046) 438-1200",
+    "email": "info@tanza.gov.ph",
     "office_hours": "Monday - Friday, 8:00 AM - 5:00 PM"
   },
   "social_links": {
-    "facebook": "https://facebook.com/LGUSampalocQuezon"
+    "facebook": "https://facebook.com/LGUTanza"
   }
 }

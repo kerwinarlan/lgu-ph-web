@@ -8,6 +8,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-22c55e?logo=github)](https://kerwinarlan.github.io/lgu-ph-web/)
 [![CI/CD](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/deploy.yml)
 
 </div>
@@ -17,6 +18,12 @@ It simplifies public service publishing for Barangays, Municipalities, Cities, a
 The framework enforces DILG Full Disclosure Policy and ARTA Citizen's Charter compliance.
 
 ---
+
+## Live Demo
+
+Live GitHub Pages site: **[https://kerwinarlan.github.io/lgu-ph-web/](https://kerwinarlan.github.io/lgu-ph-web/)**
+
+Reference LGU layout benchmarked against Tanza Municipality, Cavite (Region IV-A).
 
 ## Why it exists: LGU portals need speed and compliance
 
@@ -48,7 +55,7 @@ Pipeline stages:
 2. **Catalog** - Record municipal services and fees under `data/citizens_charter.json` per ARTA guidelines.
 3. **Publish** - Upload financial and procurement reports into `data/fdp_portal.json` per DILG rules.
 4. **Validate** - `scripts/validate_data.py` verifies required keys, date formats, and PSGC digits before deployment.
-5. **Render** - `src/js/app.js` renders responsive cards, searchable service tables, and emergency hotline lists.
+5. **Render** - `js/app.js` renders responsive cards, searchable service tables, and emergency hotline lists.
 
 ## Features
 
@@ -96,10 +103,9 @@ lgu-ph-web/
 │   ├── COMPLIANCE.md           # DILG, ARTA, DICT regulatory framework
 │   └── ARCHITECTURE.md         # Data model and frontend design
 ├── schemas/                    # JSON Schema specification files
-├── src/
-│   ├── index.html              # Responsive LGU portal frontend
-│   ├── css/style.css           # Mobile-first CSS stylesheet
-│   └── js/app.js               # Dynamic data rendering and search
+├── css/style.css               # Mobile-first CSS stylesheet
+├── js/app.js                   # Dynamic data rendering and search
+├── index.html                  # Responsive LGU portal frontend
 ├── scripts/
 │   └── validate_data.py        # Python data validation tool
 ├── tests/
@@ -132,10 +138,10 @@ python3 -m unittest discover -s tests/
 
 ### Preview locally
 
-Serve the `src` directory with Python's built-in HTTP server:
+Serve the root directory with Python's built-in HTTP server:
 
 ```bash
-python3 -m http.server 8000 --directory src
+python3 -m http.server 8000
 ```
 
 Open `http://localhost:8000` in your web browser.
