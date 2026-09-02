@@ -3,42 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LGU Web Portal - Republic of the Philippines</title>
+  <title>Municipality of Tanza, Cavite - Official LGU Digital Portal</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+  <!-- Top Utility Bar -->
+  <div class="top-gov-bar">
+    <div class="top-gov-container">
+      <div class="gov-brand">
+        <span class="seal-badge">GOV.PH</span>
+        <span>Republic of the Philippines | Province of Cavite</span>
+      </div>
+      <div>
+        <span>Standard Time: PST (UTC+8)</span>
+      </div>
+    </div>
+  </div>
 
   <header>
     <div class="header-container">
       <div class="lgu-title" id="lgu-header-info">
         <h1>Municipality of Tanza</h1>
-        <p>Republic of the Philippines | Province of Cavite</p>
+        <p>Province of Cavite | Region IV-A (CALABARZON)</p>
       </div>
     </div>
   </header>
 
+  <!-- Sticky Emergency Banner -->
   <div class="sticky-emergency-bar">
     🚨 EMERGENCY HOTLINES (24/7): MDRRMO <strong>+63 917 555 0199</strong> | PNP <strong>+63 998 555 0122</strong> | BFP <strong>+63 922 555 0133</strong>
   </div>
 
   <nav>
     <div class="nav-container">
-      <a href="#about">About LGU</a>
-      <a href="#emergency">Emergency Hotlines</a>
+      <a href="#about">Executive Message</a>
+      <a href="#services">Online Services</a>
+      <a href="#emergency">Emergency Directory</a>
       <a href="#charter">Citizen's Charter</a>
       <a href="#fdp">Full Disclosure (DILG)</a>
     </div>
   </nav>
 
   <main>
-    <section id="about" class="hero">
+    <!-- Executive Hero & Mayor's Message -->
+    <section id="about" class="executive-hero">
       <div id="lgu-overview">
-        <h2>Welcome to the LGU Portal</h2>
-        <p>Providing transparent, accessible, and fast public services for all citizens.</p>
+        <h2>Message from the Municipal Mayor</h2>
+        <div class="executive-quote" id="mayor-message-box">
+          Loading executive message...
+        </div>
+      </div>
+
+      <!-- Quick Municipal Stats -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value">339,308</div>
+          <div class="stat-label">Population (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">1st Class</div>
+          <div class="stat-label">Income Class</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">78.33 km²</div>
+          <div class="stat-label">Land Area</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">41</div>
+          <div class="stat-label">Barangays</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Online Services Grid -->
+    <section id="services" style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.4rem; color: var(--primary-dark); margin-bottom: 1rem;">Core Public Services</h2>
+      <div class="service-actions-grid">
+        <a href="#charter" class="action-card">
+          <h3>🏢 Business Permits (BPLO)</h3>
+          <p>Apply or renew municipal business clearance and licenses.</p>
+        </a>
+        <a href="#charter" class="action-card">
+          <h3>📜 Real Property Tax</h3>
+          <p>Request tax declaration records and tax clearances.</p>
+        </a>
+        <a href="#charter" class="action-card">
+          <h3>🏥 Municipal Health Office</h3>
+          <p>Health certificates, medical clearances, and consultations.</p>
+        </a>
+        <a href="#fdp" class="action-card">
+          <h3>📊 DILG Transparency</h3>
+          <p>Access municipal executive budgets, SEF reports, and procurement plans.</p>
+        </a>
       </div>
     </section>
 
     <div class="grid">
+      <!-- 24/7 Emergency Directory -->
       <section id="emergency" class="card">
         <h2>Emergency Hotlines (24/7)</h2>
         <ul id="emergency-contacts" class="emergency-list">
@@ -46,21 +108,24 @@
         </ul>
       </section>
 
+      <!-- Local Advisory & Announcements -->
       <section id="announcements" class="card">
-        <h2>Mayor's Desk & Community Advisory</h2>
-        <div id="mayor-message">
-          <p><strong>Community Advisory on Heavy Weather Monitoring</strong></p>
-          <p>Residents in coastal and low-lying barangays are advised to monitor weather updates and stay in contact with local BDRRMC officers.</p>
+        <h2>Public Advisory & Press Releases</h2>
+        <div style="background-color: var(--bg-light); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--primary);">
+          <p style="font-weight: 700; color: var(--primary-dark);">Community Weather Advisory</p>
+          <p style="font-size: 0.9rem; margin-top: 0.25rem;">
+            The Municipal Disaster Risk Reduction and Management Office (MDRRMO) advises low-lying and coastal barangays to monitor daily weather updates.
+          </p>
         </div>
       </section>
     </div>
 
+    <!-- ARTA Citizen's Charter Section -->
     <section id="charter" class="card" style="margin-bottom: 2rem;">
       <h2>ARTA Citizen's Charter (RA 11032)</h2>
       <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">
-        Search municipal public service workflows, processing times, required clearance documents, and official fees.
+        Official service workflows, processing timeframes, required application documents, and municipal fees under Republic Act 11032.
       </p>
-      <label for="charter-search" class="sr-only" style="display:none;">Search Citizen's Charter</label>
       <input type="text" id="charter-search" class="search-input" placeholder="Search service name, office, or clearance code (e.g., BPLO, Tax, Permit)...">
       <div class="table-responsive">
         <table>
@@ -81,6 +146,7 @@
       </div>
     </section>
 
+    <!-- DILG Full Disclosure Policy Section -->
     <section id="fdp" class="card">
       <h2>DILG Full Disclosure Policy (FDP) Portal</h2>
       <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">
@@ -108,8 +174,8 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Republic of the Philippines | Official LGU Portal Framework</p>
-    <p>Compliant with DILG Full Disclosure Policy & ARTA Citizen's Charter standards.</p>
+    <p>&copy; 2025 Republic of the Philippines | Municipality of Tanza, Cavite</p>
+    <p style="margin-top: 0.25rem;">Compliant with DILG Full Disclosure Policy & ARTA Citizen's Charter (RA 11032) Standards.</p>
   </footer>
 
   <script src="js/app.js"></script>

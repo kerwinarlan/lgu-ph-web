@@ -26,41 +26,17 @@ function renderLGUHeader(lgu) {
   if (headerElem) {
     headerElem.innerHTML = `
       <h1>${lgu.lgu_name}</h1>
-      <p>${lgu.province}, ${lgu.region} | ${lgu.income_class} ${lgu.lgu_level} | PSGC ${lgu.psgc_code}</p>
+      <p>Province of ${lgu.province} | ${lgu.region} | PSGC Code ${lgu.psgc_code}</p>
     `;
   }
 
-  const overviewElem = document.getElementById("lgu-overview");
-  if (overviewElem && lgu.overview) {
-    overviewElem.innerHTML = `
-      <h2>Welcome to ${lgu.lgu_name}</h2>
-      <p style="font-size: 1.05rem; margin-bottom: 1rem;">${lgu.overview}</p>
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-value">${lgu.population ? lgu.population.toLocaleString() : '339,308'}</div>
-          <div class="stat-label">Population (2024)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${lgu.income_class || '1st Class'}</div>
-          <div class="stat-label">Income Class</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${lgu.area_sq_km || '78.33'} km²</div>
-          <div class="stat-label">Land Area</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">41</div>
-          <div class="stat-label">Barangays</div>
-        </div>
-      </div>
-    `;
-  }
-
-  const mayorMsg = document.getElementById("mayor-message");
-  if (mayorMsg && lgu.mayor) {
-    mayorMsg.innerHTML = `
-      <h3>Message from ${lgu.mayor.name} (${lgu.mayor.term})</h3>
+  const mayorBox = document.getElementById("mayor-message-box");
+  if (mayorBox && lgu.mayor) {
+    mayorBox.innerHTML = `
       <p>"${lgu.mayor.message}"</p>
+      <div class="executive-signature">
+        — ${lgu.mayor.name}, ${lgu.mayor.title || 'Municipal Mayor'} (${lgu.mayor.term})
+      </div>
     `;
   }
 }
