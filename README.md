@@ -100,6 +100,7 @@ lgu-ph-web/
 │   ├── emergency_contacts.json # Emergency hotline directory
 │   └── news/                   # Local advisories (Markdown)
 ├── docs/
+│   ├── fdp/                    # DILG FDP & BAC disclosure PDF files
 │   ├── COMPLIANCE.md           # DILG, ARTA, DICT regulatory framework
 │   └── ARCHITECTURE.md         # Data model and frontend design
 ├── schemas/                    # JSON Schema specification files
@@ -107,7 +108,8 @@ lgu-ph-web/
 ├── js/app.js                   # Dynamic data rendering and search
 ├── index.html                  # Responsive LGU portal frontend
 ├── scripts/
-│   └── validate_data.py        # Python data validation tool
+│   ├── validate_data.py        # Python data validation tool
+│   └── generate_fdp_pdfs.py    # FDP PDF disclosure generator
 ├── tests/
 │   └── test_validator.py       # Automated unit test suite
 ├── .gitignore

@@ -85,7 +85,7 @@ class TestLGUValidator(unittest.TestCase):
                     "category": "Budget",
                     "title": "Annual Budget",
                     "publication_date": "2024-01-01",
-                    "file_url": "doc.pdf",
+                    "file_url": "index.html",
                     "status": "Published",
                 }
             ],

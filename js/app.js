@@ -8,30 +8,70 @@ document.addEventListener("DOMContentLoaded", async () => {
   initStatCounters();
   init3DLogoCanvas();
   initMouseSpotlight();
+  initCharterTableDelegation();
 
-  try {
-    const [lguRes, charterRes, fdpRes, emergencyRes] = await Promise.all([
-      fetch("data/lgu_config.json"),
-      fetch("data/citizens_charter.json"),
-      fetch("data/fdp_portal.json"),
-      fetch("data/emergency_contacts.json")
-    ]);
+  // Resilient multi-resource fetch
+  const [lgu, charter, fdp, emergency] = await Promise.all([
+    fetchJSON("data/lgu_config.json"),
+    fetchJSON("data/citizens_charter.json"),
+    fetchJSON("data/fdp_portal.json"),
+    fetchJSON("data/emergency_contacts.json")
+  ]);
 
-    const lgu = await lguRes.json();
-    const charter = await charterRes.json();
-    const fdp = await fdpRes.json();
-    const emergency = await emergencyRes.json();
+  if (lgu) renderLGUHeader(lgu);
+  else renderSectionError("lgu-header-info", "Municipal details temporarily unavailable.");
 
-    renderLGUHeader(lgu);
-    renderEmergencyContacts(emergency);
-    renderCitizensCharter(charter);
+  if (emergency) renderEmergencyContacts(emergency);
+  else renderSectionError("emergency-contacts", "Emergency hotline directory unavailable.");
+
+  if (charter) renderCitizensCharter(charter);
+  else renderSectionError("charter-table-body", "Citizen's Charter database unavailable.");
+
+  if (fdp) {
     renderBACNotices(fdp);
     renderFDPDocuments(fdp);
-    initModalHandlers();
-  } catch (err) {
-    console.error("Failed to load LGU data:", err);
+  } else {
+    renderSectionError("bac-table-body", "Procurement notices unavailable.");
+    renderSectionError("fdp-table-body", "FDP financial documents unavailable.");
   }
+
+  initModalHandlers();
 });
+
+// Helper for safe HTML escaping to prevent XSS
+function escapeHTML(str) {
+  if (typeof str !== "string") return str ?? "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Resilient JSON fetch helper checking HTTP response status
+async function fetchJSON(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.warn(`[LGU Portal] Failed to fetch resource '${url}':`, err);
+    return null;
+  }
+}
+
+function renderSectionError(elementId, message) {
+  const elem = document.getElementById(elementId);
+  if (!elem) return;
+  if (elem.tagName === "TBODY") {
+    elem.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:1.5rem;">⚠️ ${escapeHTML(message)}</td></tr>`;
+  } else {
+    elem.innerHTML = `<div style="color:var(--text-muted);padding:1rem;">⚠️ ${escapeHTML(message)}</div>`;
+  }
+}
 
 // Official Government Banner Accordion Toggle
 function initGovBannerToggle() {
@@ -222,11 +262,11 @@ function renderLGUHeader(lgu) {
   const headerElem = document.getElementById("lgu-header-info");
   if (headerElem) {
     headerElem.innerHTML = `
-      <h1>${lgu.lgu_name}</h1>
+      <h1>${escapeHTML(lgu.lgu_name)}</h1>
       <p>
-        <span>Province of ${lgu.province}</span> | 
-        <span>${lgu.region}</span> | 
-        <span class="psgc-pill">PSGC ${lgu.psgc_code}</span>
+        <span>Province of ${escapeHTML(lgu.province)}</span> | 
+        <span>${escapeHTML(lgu.region)}</span> | 
+        <span class="psgc-pill">PSGC ${escapeHTML(lgu.psgc_code)}</span>
       </p>
     `;
   }
@@ -234,9 +274,9 @@ function renderLGUHeader(lgu) {
   const mayorBox = document.getElementById("mayor-message-box");
   if (mayorBox && lgu.mayor) {
     mayorBox.innerHTML = `
-      <p>"${lgu.mayor.message}"</p>
+      <p>"${escapeHTML(lgu.mayor.message)}"</p>
       <div class="executive-signature">
-        <span>— ${lgu.mayor.name}, ${lgu.mayor.title || 'Municipal Mayor'} (${lgu.mayor.term})</span>
+        <span>— ${escapeHTML(lgu.mayor.name)}, ${escapeHTML(lgu.mayor.title || 'Municipal Mayor')} (${escapeHTML(lgu.mayor.term)})</span>
         <span style="color: var(--color-accent); font-weight: 800;">Tanza, Cavite</span>
       </div>
     `;
@@ -250,15 +290,25 @@ function renderEmergencyContacts(emergency) {
   container.innerHTML = emergency.hotlines.map(h => `
     <li class="emergency-item">
       <div>
-        <strong>${h.agency}</strong><br>
-        <span class="phone-number">${h.phone}</span> <span style="font-size:0.8rem;color:var(--text-muted)">(${h.landline})</span>
+        <strong>${escapeHTML(h.agency)}</strong><br>
+        <span class="phone-number">${escapeHTML(h.phone)}</span> <span style="font-size:0.8rem;color:var(--text-muted)">(${escapeHTML(h.landline)})</span>
       </div>
       <div class="btn-group-hotline">
         <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
-        <button class="btn-copy" onclick="copyHotline('${h.phone}', this)">Copy</button>
+        <button type="button" class="btn-copy" data-hotline="${escapeHTML(h.phone)}">Copy</button>
       </div>
     </li>
   `).join("");
+
+  if (!container.dataset.delegated) {
+    container.dataset.delegated = "true";
+    container.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn-copy");
+      if (btn && btn.dataset.hotline) {
+        copyHotline(btn.dataset.hotline, btn);
+      }
+    });
+  }
 }
 
 function copyHotline(phoneNumber, btnElem) {
@@ -281,12 +331,17 @@ function copyHotline(phoneNumber, btnElem) {
   }
 }
 
+let toastTimeoutId = null;
 function showToast(message) {
   const toast = document.getElementById("toast-bar");
   if (!toast) return;
+  if (toastTimeoutId) clearTimeout(toastTimeoutId);
   toast.textContent = message;
   toast.classList.add("active");
-  setTimeout(() => { toast.classList.remove("active"); }, 3000);
+  toastTimeoutId = setTimeout(() => {
+    toast.classList.remove("active");
+    toastTimeoutId = null;
+  }, 3000);
 }
 
 function renderCitizensCharter(charter) {
@@ -311,6 +366,27 @@ function renderCitizensCharter(charter) {
   }
 }
 
+function initCharterTableDelegation() {
+  const tbody = document.getElementById("charter-table-body");
+  if (!tbody || tbody.dataset.delegated) return;
+  tbody.dataset.delegated = "true";
+
+  const handleAction = (target) => {
+    const row = target.closest("tr.interactive-row");
+    if (row && row.dataset.charterId) {
+      openCharterModal(row.dataset.charterId);
+    }
+  };
+
+  tbody.addEventListener("click", (e) => handleAction(e.target));
+  tbody.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleAction(e.target);
+    }
+  });
+}
+
 function renderCharterRows(services) {
   const tbody = document.getElementById("charter-table-body");
   if (!tbody) return;
@@ -326,13 +402,13 @@ function renderCharterRows(services) {
     if (s.classification === "Highly Technical") badgeClass = "badge-technical";
 
     return `
-      <tr class="interactive-row" onclick="openCharterModal('${s.id}')">
-        <td><strong>${s.id}</strong></td>
-        <td><strong style="color:var(--color-primary);">${s.service_name}</strong></td>
-        <td>${s.office}</td>
-        <td><span class="badge ${badgeClass}">${s.classification}</span></td>
-        <td>${s.processing_time}</td>
-        <td>${s.fees}</td>
+      <tr class="interactive-row" data-charter-id="${escapeHTML(s.id)}" tabindex="0" role="button" aria-label="View details for ${escapeHTML(s.service_name)}">
+        <td><strong>${escapeHTML(s.id)}</strong></td>
+        <td><strong style="color:var(--color-primary);">${escapeHTML(s.service_name)}</strong></td>
+        <td>${escapeHTML(s.office)}</td>
+        <td><span class="badge ${badgeClass}">${escapeHTML(s.classification)}</span></td>
+        <td>${escapeHTML(s.processing_time)}</td>
+        <td>${escapeHTML(s.fees)}</td>
       </tr>
     `;
   }).join("");
@@ -354,7 +430,7 @@ function openCharterModal(serviceId) {
 
   const reqList = document.getElementById("modal-requirements");
   if (s.required_documents && s.required_documents.length) {
-    reqList.innerHTML = s.required_documents.map(req => `<li>${req}</li>`).join("");
+    reqList.innerHTML = s.required_documents.map(req => `<li>${escapeHTML(req)}</li>`).join("");
   } else {
     reqList.innerHTML = `<li>Complete filled application form</li>`;
   }
@@ -362,7 +438,7 @@ function openCharterModal(serviceId) {
   const stepList = document.getElementById("modal-steps");
   if (s.steps && s.steps.length) {
     stepList.innerHTML = s.steps.map((step, idx) => `
-      <li><strong>Step ${idx + 1}:</strong> ${step}</li>
+      <li><strong>Step ${idx + 1}:</strong> ${escapeHTML(step)}</li>
     `).join("");
   } else {
     stepList.innerHTML = `<li>Submit complete documents at the assigned service window.</li>`;
@@ -416,10 +492,10 @@ function renderBACRows(docs) {
   tbody.innerHTML = docs.map((d, idx) => `
     <tr>
       <td><strong>TNZ-BAC-2025-0${idx + 1}</strong></td>
-      <td><strong style="color:var(--color-primary);">${d.title}</strong></td>
+      <td><strong style="color:var(--color-primary);">${escapeHTML(d.title)}</strong></td>
       <td>₱${(2500000 + idx * 1250000).toLocaleString('en-US')}</td>
       <td><span class="badge badge-active">Open for Bidding</span></td>
-      <td><a href="${d.file_url}" target="_blank" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
+      <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
     </tr>
   `).join("");
 }
@@ -433,7 +509,7 @@ function renderFDPDocuments(fdp) {
 
   if (tabContainer) {
     tabContainer.innerHTML = categories.map((cat, idx) => `
-      <button class="tab-btn ${idx === 0 ? 'active' : ''}" data-category="${cat}">${cat}</button>
+      <button type="button" class="tab-btn ${idx === 0 ? 'active' : ''}" data-category="${escapeHTML(cat)}">${escapeHTML(cat)}</button>
     `).join("");
 
     tabContainer.querySelectorAll(".tab-btn").forEach(btn => {
@@ -454,10 +530,10 @@ function renderFDPDocuments(fdp) {
   const renderFDPRows = (docs) => {
     tbody.innerHTML = docs.map(d => `
       <tr>
-        <td><strong style="color:var(--color-primary);">${d.category}</strong></td>
-        <td>${d.title}</td>
-        <td>${d.publication_date}</td>
-        <td><a href="${d.file_url}" target="_blank" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
+        <td><strong style="color:var(--color-primary);">${escapeHTML(d.category)}</strong></td>
+        <td>${escapeHTML(d.title)}</td>
+        <td>${escapeHTML(d.publication_date)}</td>
+        <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
       </tr>
     `).join("");
   };
@@ -465,7 +541,7 @@ function renderFDPDocuments(fdp) {
   renderFDPRows(fdp.documents);
 }
 
-// Interactive 3D Canvas Seal Emblem with Gold Particle Physics & Parallax Tilt
+// Interactive 3D Canvas Seal Emblem with Gold Particle Physics & High-DPI Scaling
 function init3DLogoCanvas() {
   const canvas = document.getElementById("hero-3d-canvas");
   if (!canvas) return;
@@ -473,10 +549,14 @@ function init3DLogoCanvas() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  let width = canvas.width = 120;
-  let height = canvas.height = 120;
-  const cx = width / 2;
-  const cy = height / 2;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const displayWidth = 120;
+  const displayHeight = 120;
+  canvas.width = displayWidth * dpr;
+  canvas.height = displayHeight * dpr;
+
+  const cx = displayWidth / 2;
+  const cy = displayHeight / 2;
 
   let angleY = 0;
   let angleX = 0;
@@ -493,17 +573,25 @@ function init3DLogoCanvas() {
     speed: Math.random() * 0.02 + 0.008
   }));
 
-  // Track Mouse for 3D Parallax Tilt
-  window.addEventListener("mousemove", (e) => {
+  const updateTargetAngles = (clientX, clientY) => {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - (rect.left + rect.width / 2);
-    const mouseY = e.clientY - (rect.top + rect.height / 2);
+    const mouseX = clientX - (rect.left + rect.width / 2);
+    const mouseY = clientY - (rect.top + rect.height / 2);
     targetAngleY = (mouseX / window.innerWidth) * 0.8;
     targetAngleX = (-mouseY / window.innerHeight) * 0.8;
-  });
+  };
+
+  // Track Mouse & Touch for 3D Parallax Tilt
+  window.addEventListener("mousemove", (e) => updateTargetAngles(e.clientX, e.clientY));
+  window.addEventListener("touchmove", (e) => {
+    if (e.touches && e.touches[0]) {
+      updateTargetAngles(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
 
   function render() {
-    ctx.clearRect(0, 0, width, height);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, displayWidth, displayHeight);
 
     // Smooth Damping Perspective Interpolation
     angleX += (targetAngleX - angleX) * 0.08;
@@ -594,7 +682,7 @@ function initMouseSpotlight() {
   });
 }
 
-// Screen-wide Ambient Moving Gold/Sky Light Particles Canvas
+// Screen-wide Ambient Moving Gold/Sky Light Particles Canvas with High-DPI Scaling
 function initGlobalParticleCanvas() {
   const canvas = document.getElementById("global-bg-canvas");
   if (!canvas) return;
@@ -602,31 +690,44 @@ function initGlobalParticleCanvas() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let displayWidth = window.innerWidth;
+  let displayHeight = window.innerHeight;
 
-  window.addEventListener("resize", () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
+  const resizeCanvas = () => {
+    displayWidth = window.innerWidth;
+    displayHeight = window.innerHeight;
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
+  };
 
-  let mouseX = width / 2;
-  let mouseY = height / 2;
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
 
-  window.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
+  let mouseX = displayWidth / 2;
+  let mouseY = displayHeight / 2;
+
+  const updatePointer = (x, y) => {
+    mouseX = x;
+    mouseY = y;
+  };
+
+  window.addEventListener("mousemove", (e) => updatePointer(e.clientX, e.clientY));
+  window.addEventListener("touchmove", (e) => {
+    if (e.touches && e.touches[0]) {
+      updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
 
   let scrollY = window.scrollY;
   window.addEventListener("scroll", () => {
     scrollY = window.scrollY;
-  });
+  }, { passive: true });
 
   const particleCount = 45;
   const particles = Array.from({ length: particleCount }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
+    x: Math.random() * displayWidth,
+    y: Math.random() * displayHeight,
     radius: Math.random() * 2.2 + 0.8,
     vx: (Math.random() - 0.5) * 0.4,
     vy: (Math.random() - 0.5) * 0.4,
@@ -636,7 +737,8 @@ function initGlobalParticleCanvas() {
   }));
 
   function animate() {
-    ctx.clearRect(0, 0, width, height);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, displayWidth, displayHeight);
 
     const time = Date.now() * 0.001;
 
@@ -648,10 +750,10 @@ function initGlobalParticleCanvas() {
       p.y += p.vy + Math.cos(time + p.waveFactor) * 0.15;
 
       // Wrap around edges
-      if (p.x < 0) p.x = width;
-      if (p.x > width) p.x = 0;
-      if (p.y < 0) p.y = height;
-      if (p.y > height) p.y = 0;
+      if (p.x < 0) p.x = displayWidth;
+      if (p.x > displayWidth) p.x = 0;
+      if (p.y < 0) p.y = displayHeight;
+      if (p.y > displayHeight) p.y = 0;
 
       // React subtly to mouse proximity
       const dx = mouseX - p.x;

@@ -106,6 +106,7 @@ def validate_fdp_portal(data: dict) -> list[str]:
         return errors
 
     valid_statuses = ["Published", "Archived", "Pending"]
+    base_dir = Path(__file__).resolve().parent.parent
     for idx, doc in enumerate(docs):
         for field in [
             "id",
@@ -121,6 +122,14 @@ def validate_fdp_portal(data: dict) -> list[str]:
         status = doc.get("status")
         if status and status not in valid_statuses:
             errors.append(f"fdp_portal: Doc #{idx} invalid status '{status}'")
+
+        file_url = doc.get("file_url")
+        if file_url and status == "Published":
+            target_path = base_dir / file_url
+            if not target_path.exists():
+                errors.append(
+                    f"fdp_portal: Doc #{idx} file_url '{file_url}' target file does not exist"
+                )
 
     return errors
 
