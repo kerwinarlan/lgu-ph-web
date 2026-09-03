@@ -1,7 +1,7 @@
 /* ==========================================================================
    LGU PH Web - Municipality of Tanza Official LGU Digital Portal
    Institutional Philippine Government Civic Design System
-   Version: 10.0.0 (Crafted Panel & Hierarchy System)
+   Version: 11.0.0 (Tanza Landscape Motion Background System)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
@@ -101,6 +101,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -162,6 +163,72 @@ button, input, select, textarea {
 .accent-bar-red { border-top: 4px solid var(--color-emergency) !important; }
 .accent-bar-green { border-top: 4px solid var(--color-success) !important; }
 .accent-bar-blue { border-top: 4px solid var(--color-primary-light) !important; }
+
+/* ==========================================================================
+   00.A Fixed Full-Page Moving Tanza Landscape Background System
+   ========================================================================== */
+.global-landscape-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg-page);
+}
+
+.landscape-layer {
+  position: absolute;
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform, opacity;
+}
+
+.landscape-layer.layer-1 {
+  background-image: url('../images/tanza_sunset_coast.jpg');
+  animation: kenburnsPan1 38s infinite alternate ease-in-out, landscapeFade1 38s infinite ease-in-out;
+}
+
+.landscape-layer.layer-2 {
+  background-image: url('../images/tanza_coastal_hero.jpg');
+  animation: kenburnsPan2 44s infinite alternate ease-in-out, landscapeFade2 38s infinite ease-in-out;
+  animation-delay: -19s;
+}
+
+@keyframes kenburnsPan1 {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.06) translate(-1.5%, -1%); }
+  100% { transform: scale(1.02) translate(1%, -1.5%); }
+}
+
+@keyframes kenburnsPan2 {
+  0% { transform: scale(1.04) translate(1%, 1%); }
+  50% { transform: scale(1) translate(-1%, 0); }
+  100% { transform: scale(1.07) translate(-1.5%, 1%); }
+}
+
+@keyframes landscapeFade1 {
+  0%, 45% { opacity: 0.25; }
+  50%, 95% { opacity: 0.06; }
+  100% { opacity: 0.25; }
+}
+
+@keyframes landscapeFade2 {
+  0%, 45% { opacity: 0.06; }
+  50%, 95% { opacity: 0.25; }
+  100% { opacity: 0.06; }
+}
+
+.landscape-overlay-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, 
+    rgba(248, 250, 252, 0.84) 0%, 
+    rgba(248, 250, 252, 0.80) 45%, 
+    rgba(248, 250, 252, 0.88) 100%);
+}
 
 /* ==========================================================================
    01. Official Government Verification Banner (USWDS/SGDS Standard)
@@ -584,7 +651,8 @@ button, input, select, textarea {
 }
 
 .search-hero-card {
-  background: linear-gradient(135deg, var(--color-primary-navy) 0%, #153a5c 100%);
+  background: linear-gradient(135deg, rgba(15, 41, 66, 0.92) 0%, rgba(21, 58, 92, 0.88) 100%),
+              url('../images/tanza_sunset_coast.jpg') center/cover no-repeat;
   color: #ffffff;
   padding: 1.75rem;
   border-radius: var(--radius-md);
@@ -718,7 +786,8 @@ button, input, select, textarea {
 }
 
 .executive-message-card {
-  background-color: var(--bg-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.92) 100%),
+              url('../images/philippine_heritage.jpg') center/cover no-repeat;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.5rem;
@@ -1552,5 +1621,10 @@ html.text-scale-xl { font-size: 20px; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .landscape-layer {
+    animation: none !important;
+    transform: none !important;
   }
 }
