@@ -14,3 +14,8 @@ Thumbs.db
 # Output / Build
 dist/
 build/
+
+# Local Tooling & Pi Harness
+.pi/
+*.png
+

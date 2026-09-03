@@ -1,13 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // Initialize interactive utility modules
-  initGlobalParticleCanvas();
   initPSTClock();
   initGovBannerToggle();
   initAccessibilityEngine();
   initUniversalSearch();
   initStatCounters();
-  init3DLogoCanvas();
-  initMouseSpotlight();
   initCharterTableDelegation();
 
   // Resilient multi-resource fetch
@@ -67,9 +64,9 @@ function renderSectionError(elementId, message) {
   const elem = document.getElementById(elementId);
   if (!elem) return;
   if (elem.tagName === "TBODY") {
-    elem.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:1.5rem;">⚠️ ${escapeHTML(message)}</td></tr>`;
+    elem.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-subtle);padding:1.5rem;">⚠️ ${escapeHTML(message)}</td></tr>`;
   } else {
-    elem.innerHTML = `<div style="color:var(--text-muted);padding:1rem;">⚠️ ${escapeHTML(message)}</div>`;
+    elem.innerHTML = `<div style="color:var(--text-subtle);padding:1rem;">⚠️ ${escapeHTML(message)}</div>`;
   }
 }
 
@@ -198,13 +195,13 @@ function initStatCounters() {
     const target = parseFloat(elem.getAttribute("data-count"));
     const decimals = parseInt(elem.getAttribute("data-decimals") || "0", 10);
     const suffix = elem.getAttribute("data-suffix") || "";
-    const duration = 1500; // ms
+
+    const duration = 1200; // ms
     const startTime = performance.now();
 
     const updateValue = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out expo formula
       const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       const currentValue = target * easeProgress;
 
@@ -264,8 +261,8 @@ function renderLGUHeader(lgu) {
     headerElem.innerHTML = `
       <h1>${escapeHTML(lgu.lgu_name)}</h1>
       <p>
-        <span>Province of ${escapeHTML(lgu.province)}</span> | 
-        <span>${escapeHTML(lgu.region)}</span> | 
+        <span>Province of ${escapeHTML(lgu.province)}</span> &bull; 
+        <span>${escapeHTML(lgu.region)}</span> &bull; 
         <span class="psgc-pill">PSGC ${escapeHTML(lgu.psgc_code)}</span>
       </p>
     `;
@@ -276,8 +273,8 @@ function renderLGUHeader(lgu) {
     mayorBox.innerHTML = `
       <p>"${escapeHTML(lgu.mayor.message)}"</p>
       <div class="executive-signature">
-        <span>— ${escapeHTML(lgu.mayor.name)}, ${escapeHTML(lgu.mayor.title || 'Municipal Mayor')} (${escapeHTML(lgu.mayor.term)})</span>
-        <span style="color: var(--color-accent); font-weight: 800;">Tanza, Cavite</span>
+        <span>&mdash; ${escapeHTML(lgu.mayor.name)}, ${escapeHTML(lgu.mayor.title || 'Municipal Mayor')} (${escapeHTML(lgu.mayor.term)})</span>
+        <span style="color: var(--color-gold-dark); font-weight: 800;">Tanza, Cavite</span>
       </div>
     `;
   }
@@ -290,8 +287,8 @@ function renderEmergencyContacts(emergency) {
   container.innerHTML = emergency.hotlines.map(h => `
     <li class="emergency-item">
       <div>
-        <strong>${escapeHTML(h.agency)}</strong><br>
-        <span class="phone-number">${escapeHTML(h.phone)}</span> <span style="font-size:0.8rem;color:var(--text-muted)">(${escapeHTML(h.landline)})</span>
+        <strong style="color: var(--color-primary-navy); font-size: 0.95rem;">${escapeHTML(h.agency)}</strong><br>
+        <span class="phone-number">${escapeHTML(h.phone)}</span> <span style="font-size:0.8rem;color:var(--text-subtle)">(${escapeHTML(h.landline)})</span>
       </div>
       <div class="btn-group-hotline">
         <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
@@ -392,7 +389,7 @@ function renderCharterRows(services) {
   if (!tbody) return;
 
   if (!services || services.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No matching services found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-subtle);">No matching services found.</td></tr>`;
     return;
   }
 
@@ -404,7 +401,7 @@ function renderCharterRows(services) {
     return `
       <tr class="interactive-row" data-charter-id="${escapeHTML(s.id)}" tabindex="0" role="button" aria-label="View details for ${escapeHTML(s.service_name)}">
         <td><strong>${escapeHTML(s.id)}</strong></td>
-        <td><strong style="color:var(--color-primary);">${escapeHTML(s.service_name)}</strong></td>
+        <td><strong style="color:var(--color-primary-navy);">${escapeHTML(s.service_name)}</strong></td>
         <td>${escapeHTML(s.office)}</td>
         <td><span class="badge ${badgeClass}">${escapeHTML(s.classification)}</span></td>
         <td>${escapeHTML(s.processing_time)}</td>
@@ -485,14 +482,14 @@ function renderBACRows(docs) {
   if (!tbody) return;
 
   if (!docs || docs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No active procurement notices matching query.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-subtle);">No active procurement notices matching query.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = docs.map((d, idx) => `
     <tr>
       <td><strong>TNZ-BAC-2025-0${idx + 1}</strong></td>
-      <td><strong style="color:var(--color-primary);">${escapeHTML(d.title)}</strong></td>
+      <td><strong style="color:var(--color-primary-navy);">${escapeHTML(d.title)}</strong></td>
       <td>₱${(2500000 + idx * 1250000).toLocaleString('en-US')}</td>
       <td><span class="badge badge-active">Open for Bidding</span></td>
       <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
@@ -530,7 +527,7 @@ function renderFDPDocuments(fdp) {
   const renderFDPRows = (docs) => {
     tbody.innerHTML = docs.map(d => `
       <tr>
-        <td><strong style="color:var(--color-primary);">${escapeHTML(d.category)}</strong></td>
+        <td><strong style="color:var(--color-primary-navy);">${escapeHTML(d.category)}</strong></td>
         <td>${escapeHTML(d.title)}</td>
         <td>${escapeHTML(d.publication_date)}</td>
         <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
@@ -539,261 +536,4 @@ function renderFDPDocuments(fdp) {
   };
 
   renderFDPRows(fdp.documents);
-}
-
-// Interactive 3D Canvas Seal Emblem with Gold Particle Physics & High-DPI Scaling
-function init3DLogoCanvas() {
-  const canvas = document.getElementById("hero-3d-canvas");
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const displayWidth = 120;
-  const displayHeight = 120;
-  canvas.width = displayWidth * dpr;
-  canvas.height = displayHeight * dpr;
-
-  const cx = displayWidth / 2;
-  const cy = displayHeight / 2;
-
-  let angleY = 0;
-  let angleX = 0;
-  let targetAngleX = 0;
-  let targetAngleY = 0;
-
-  // Particle Mesh for Ambient Gold Dust
-  const particleCount = 28;
-  const particles = Array.from({ length: particleCount }, () => ({
-    x: (Math.random() - 0.5) * 90,
-    y: (Math.random() - 0.5) * 90,
-    z: (Math.random() - 0.5) * 90,
-    radius: Math.random() * 1.5 + 0.8,
-    speed: Math.random() * 0.02 + 0.008
-  }));
-
-  const updateTargetAngles = (clientX, clientY) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = clientX - (rect.left + rect.width / 2);
-    const mouseY = clientY - (rect.top + rect.height / 2);
-    targetAngleY = (mouseX / window.innerWidth) * 0.8;
-    targetAngleX = (-mouseY / window.innerHeight) * 0.8;
-  };
-
-  // Track Mouse & Touch for 3D Parallax Tilt
-  window.addEventListener("mousemove", (e) => updateTargetAngles(e.clientX, e.clientY));
-  window.addEventListener("touchmove", (e) => {
-    if (e.touches && e.touches[0]) {
-      updateTargetAngles(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  }, { passive: true });
-
-  function render() {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, displayWidth, displayHeight);
-
-    // Smooth Damping Perspective Interpolation
-    angleX += (targetAngleX - angleX) * 0.08;
-    angleY += (targetAngleY - angleY) * 0.08;
-    const time = Date.now() * 0.0015;
-
-    // Render Outer Rotating 3D Ring Vertices
-    const ringNodes = 12;
-    const ringRadius = 38;
-    const projectedRing = [];
-
-    for (let i = 0; i < ringNodes; i++) {
-      const theta = (i / ringNodes) * Math.PI * 2 + time;
-      let x = Math.cos(theta) * ringRadius;
-      let y = Math.sin(theta) * ringRadius;
-      let z = Math.sin(theta * 2 + time) * 12;
-
-      // 3D Rotation Matrix (X and Y axis)
-      let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-      let cosY = Math.cos(angleY + time * 0.3), sinY = Math.sin(angleY + time * 0.3);
-
-      let x1 = x * cosY - z * sinY;
-      let z1 = z * cosY + x * sinY;
-
-      let y2 = y * cosX - z1 * sinX;
-      let z2 = z1 * cosX + y * sinX;
-
-      const scale = 220 / (220 + z2);
-      projectedRing.push({
-        px: cx + x1 * scale,
-        py: cy + y2 * scale,
-        scale,
-        alpha: Math.max(0.2, (z2 + 40) / 80)
-      });
-    }
-
-    // Draw Connector Beams on 3D Ring
-    ctx.beginPath();
-    ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
-    ctx.lineWidth = 1.2;
-    for (let i = 0; i < ringNodes; i++) {
-      const next = projectedRing[(i + 1) % ringNodes];
-      ctx.moveTo(projectedRing[i].px, projectedRing[i].py);
-      ctx.lineTo(next.px, next.py);
-    }
-    ctx.stroke();
-
-    // Draw Gold Vertices
-    projectedRing.forEach(node => {
-      ctx.beginPath();
-      ctx.arc(node.px, node.py, 2 * node.scale, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(251, 191, 36, ${node.alpha})`;
-      ctx.fill();
-    });
-
-    // Render Ambient Floating Gold Particles
-    particles.forEach(p => {
-      p.z += p.speed;
-      if (p.z > 50) p.z = -50;
-
-      const scale = 200 / (200 + p.z);
-      const px = cx + p.x * scale;
-      const py = cy + p.y * scale;
-
-      ctx.beginPath();
-      ctx.arc(px, py, p.radius * scale, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(245, 158, 11, ${0.4 * scale})`;
-      ctx.fill();
-    });
-
-    requestAnimationFrame(render);
-  }
-
-  render();
-}
-
-// Mouse Spotlight Cursor Tracking on Bento Cards
-function initMouseSpotlight() {
-  const cards = document.querySelectorAll(".action-card");
-  cards.forEach(card => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty("--mouse-x", `${x}%`);
-      card.style.setProperty("--mouse-y", `${y}%`);
-    });
-  });
-}
-
-// Screen-wide Ambient Moving Gold/Sky Light Particles Canvas with High-DPI Scaling
-function initGlobalParticleCanvas() {
-  const canvas = document.getElementById("global-bg-canvas");
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let displayWidth = window.innerWidth;
-  let displayHeight = window.innerHeight;
-
-  const resizeCanvas = () => {
-    displayWidth = window.innerWidth;
-    displayHeight = window.innerHeight;
-    canvas.width = displayWidth * dpr;
-    canvas.height = displayHeight * dpr;
-  };
-
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  let mouseX = displayWidth / 2;
-  let mouseY = displayHeight / 2;
-
-  const updatePointer = (x, y) => {
-    mouseX = x;
-    mouseY = y;
-  };
-
-  window.addEventListener("mousemove", (e) => updatePointer(e.clientX, e.clientY));
-  window.addEventListener("touchmove", (e) => {
-    if (e.touches && e.touches[0]) {
-      updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  }, { passive: true });
-
-  let scrollY = window.scrollY;
-  window.addEventListener("scroll", () => {
-    scrollY = window.scrollY;
-  }, { passive: true });
-
-  const particleCount = 45;
-  const particles = Array.from({ length: particleCount }, () => ({
-    x: Math.random() * displayWidth,
-    y: Math.random() * displayHeight,
-    radius: Math.random() * 2.2 + 0.8,
-    vx: (Math.random() - 0.5) * 0.4,
-    vy: (Math.random() - 0.5) * 0.4,
-    baseAlpha: Math.random() * 0.4 + 0.2,
-    color: Math.random() > 0.4 ? "245, 158, 11" : Math.random() > 0.5 ? "59, 130, 246" : "2, 132, 199",
-    waveFactor: Math.random() * Math.PI * 2
-  }));
-
-  function animate() {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, displayWidth, displayHeight);
-
-    const time = Date.now() * 0.001;
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-
-      // Update position with slight wave motion
-      p.x += p.vx + Math.sin(time + p.waveFactor) * 0.15;
-      p.y += p.vy + Math.cos(time + p.waveFactor) * 0.15;
-
-      // Wrap around edges
-      if (p.x < 0) p.x = displayWidth;
-      if (p.x > displayWidth) p.x = 0;
-      if (p.y < 0) p.y = displayHeight;
-      if (p.y > displayHeight) p.y = 0;
-
-      // React subtly to mouse proximity
-      const dx = mouseX - p.x;
-      const dy = (mouseY + scrollY * 0.1) - p.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 150) {
-        const angle = Math.atan2(dy, dx);
-        p.x -= Math.cos(angle) * 0.5;
-        p.y -= Math.sin(angle) * 0.5;
-      }
-
-      // Draw particle
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.color}, ${p.baseAlpha})`;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = `rgba(${p.color}, 0.5)`;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      // Draw faint connections between close particles
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        const pdx = p.x - p2.x;
-        const pdy = p.y - p2.y;
-        const pdist = Math.sqrt(pdx * pdx + pdy * pdy);
-
-        if (pdist < 120) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(${p.color}, ${0.12 * (1 - pdist / 120)})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
 }
