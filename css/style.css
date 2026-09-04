@@ -1,7 +1,7 @@
 /* ==========================================================================
    LGU PH Web - Municipality of Tanza Official LGU Digital Portal
    Institutional Philippine Government Civic Design System
-   Version: 12.0.0 (Visible Tanza Landscape, Dark Mode & High Contrast Fix)
+   Version: 13.0.0 (WCAG AAA Contrast Audit & Theme Engine Fix)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
@@ -11,7 +11,7 @@
   --color-primary-navy: #0f2942;
   --color-primary-dark: #0a192f;
   --color-primary-blue: #1e3a8a;
-  --color-primary-light: #2563eb;
+  --color-primary-light: #1d4ed8;
   --color-primary-tint: #f0f7ff;
 
   /* Official Accent Gold / Philippine Sun */
@@ -26,26 +26,26 @@
   --bg-header: #0f2942;
   --bg-banner: #0a192f;
 
-  /* High Contrast Typography */
+  /* High WCAG AA Contrast Typography */
   --text-main: #0f172a;
-  --text-muted: #334155;
-  --text-subtle: #475569;
+  --text-muted: #1e293b;
+  --text-subtle: #334155;
   --text-inverse: #ffffff;
-  --text-inverse-muted: #cbd5e1;
+  --text-inverse-muted: #e2e8f0;
 
-  /* Crisp Neutral Borders (Zero Vibe-Coded Floating Shadows) */
+  /* Crisp Neutral Borders */
   --border-color: #cbd5e1;
   --border-dark: #94a3b8;
-  --border-navy: rgba(15, 41, 66, 0.18);
+  --border-navy: rgba(15, 41, 66, 0.2);
 
   /* Status Colors */
   --color-emergency: #dc2626;
   --color-emergency-bg: #fef2f2;
-  --color-success: #16a34a;
+  --color-success: #15803d;
   --color-success-bg: #dcfce7;
-  --color-warning: #d97706;
+  --color-warning: #b45309;
   --color-warning-bg: #fef3c7;
-  --color-info: #0284c7;
+  --color-info: #0369a1;
   --color-info-bg: #e0f2fe;
 
   /* Fonts */
@@ -67,7 +67,7 @@
   --radius-lg: 14px;
   --radius-full: 9999px;
 
-  /* Zero Floating Drop Shadows (Clean Institutional Crisp Borders) */
+  /* Elevation Shadows */
   --shadow-sm: none;
   --shadow-md: none;
   --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.15);
@@ -77,24 +77,35 @@
   --transition-normal: 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dark Mode Tokens */
+/* ==========================================================================
+   Dark Theme Tokens
+   ========================================================================== */
 html.dark-theme {
-  --bg-page: #0f172a;
+  --bg-page: #0b1329;
   --bg-card: #1e293b;
   --bg-card-alt: #0f172a;
   --bg-header: #020617;
   --bg-banner: #020617;
 
   --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --text-subtle: #94a3b8;
+  --text-muted: #e2e8f0;
+  --text-subtle: #cbd5e1;
   --text-inverse: #ffffff;
-  --text-inverse-muted: #94a3b8;
+  --text-inverse-muted: #cbd5e1;
 
   --border-color: #334155;
   --border-dark: #475569;
   --color-primary-navy: #f8fafc;
   --color-primary-tint: #1e293b;
+
+  --color-success-bg: #14532d;
+  --color-success: #f0fdf4;
+  --color-warning-bg: #78350f;
+  --color-warning: #fef3c7;
+  --color-info-bg: #0c4a6e;
+  --color-info: #f0f9ff;
+  --color-emergency-bg: #7f1d1d;
+  --color-emergency: #fef2f2;
 }
 
 /* ==========================================================================
@@ -135,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   color: var(--color-primary-light);
-  text-decoration: none;
+  text-decoration: underline;
   transition: color var(--transition-fast);
 }
 
@@ -231,31 +242,31 @@ button, input, select, textarea {
 }
 
 @keyframes landscapeFade1 {
-  0%, 45% { opacity: 0.55; }
-  50%, 95% { opacity: 0.15; }
-  100% { opacity: 0.55; }
+  0%, 45% { opacity: 0.45; }
+  50%, 95% { opacity: 0.12; }
+  100% { opacity: 0.45; }
 }
 
 @keyframes landscapeFade2 {
-  0%, 45% { opacity: 0.15; }
-  50%, 95% { opacity: 0.55; }
-  100% { opacity: 0.15; }
+  0%, 45% { opacity: 0.12; }
+  50%, 95% { opacity: 0.45; }
+  100% { opacity: 0.12; }
 }
 
 .landscape-overlay-mask {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, 
-    rgba(248, 250, 252, 0.58) 0%, 
-    rgba(248, 250, 252, 0.52) 45%, 
-    rgba(248, 250, 252, 0.62) 100%);
+    rgba(248, 250, 252, 0.65) 0%, 
+    rgba(248, 250, 252, 0.60) 45%, 
+    rgba(248, 250, 252, 0.70) 100%);
 }
 
 html.dark-theme .landscape-overlay-mask {
   background: linear-gradient(180deg, 
-    rgba(15, 23, 42, 0.72) 0%, 
-    rgba(15, 23, 42, 0.68) 45%, 
-    rgba(15, 23, 42, 0.78) 100%);
+    rgba(11, 19, 41, 0.78) 0%, 
+    rgba(11, 19, 41, 0.72) 45%, 
+    rgba(11, 19, 41, 0.82) 100%);
 }
 
 /* ==========================================================================
@@ -379,6 +390,10 @@ html.dark-theme .landscape-overlay-mask {
   font-size: var(--text-xs);
 }
 
+html.dark-theme .top-gov-bar {
+  background-color: #020617;
+}
+
 .top-gov-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -407,6 +422,7 @@ html.dark-theme .landscape-overlay-mask {
 
 .gov-brand-title {
   font-weight: 600;
+  color: #ffffff;
 }
 
 .utility-controls-group {
@@ -423,13 +439,13 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .a11y-label {
-  color: #94a3b8;
+  color: #cbd5e1;
   margin-right: 0.2rem;
 }
 
 .a11y-btn {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-xs);
@@ -440,7 +456,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .a11y-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .a11y-btn.contrast-toggle {
@@ -457,14 +473,14 @@ html.dark-theme .landscape-overlay-mask {
 
 .clock-display {
   font-variant-numeric: tabular-nums;
-  color: #e2e8f0;
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 0.35rem;
 }
 
 .clock-label {
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 /* ==========================================================================
@@ -523,7 +539,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .psgc-pill {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
   color: #fef08a;
   padding: 0.1rem 0.45rem;
   border-radius: var(--radius-xs);
@@ -541,7 +557,7 @@ html.dark-theme .landscape-overlay-mask {
   display: block;
   font-size: 0.7rem;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 .tagline-main {
@@ -603,13 +619,14 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .hotline-pill {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.3);
   color: #ffffff;
   font-size: var(--text-xs);
   font-weight: 700;
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  text-decoration: none;
   transition: background var(--transition-fast);
 }
 
@@ -647,6 +664,7 @@ html.dark-theme .landscape-overlay-mask {
   font-size: var(--text-sm);
   padding: 0.85rem 0.85rem;
   white-space: nowrap;
+  text-decoration: none;
   border-bottom: 3px solid transparent;
   transition: all var(--transition-fast);
 }
@@ -678,7 +696,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .search-hero-card {
-  background: linear-gradient(135deg, rgba(15, 41, 66, 0.92) 0%, rgba(21, 58, 92, 0.88) 100%),
+  background: linear-gradient(135deg, rgba(15, 41, 66, 0.94) 0%, rgba(21, 58, 92, 0.90) 100%),
               url('../images/tanza_sunset_coast.jpg') center/cover no-repeat;
   color: #ffffff;
   padding: 2rem;
@@ -728,14 +746,14 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .universal-input::placeholder {
-  color: #64748b;
+  color: #475569;
 }
 
 .search-submit-btn {
   background: var(--color-primary-navy);
   color: #ffffff;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.1rem;
   border-radius: var(--radius-xs);
   font-size: var(--text-xs);
   font-weight: 700;
@@ -744,7 +762,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .search-submit-btn:hover {
-  background: var(--color-primary-blue);
+  background: var(--color-primary-light);
 }
 
 .search-clear-btn {
@@ -771,17 +789,18 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .quick-tag-label {
-  color: #cbd5e1;
-  font-weight: 500;
+  color: #e2e8f0;
+  font-weight: 600;
 }
 
 .quick-tag-btn {
-  background: rgba(255, 255, 255, 0.15);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -811,7 +830,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 .executive-message-card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.92) 100%),
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.93) 100%),
               url('../images/philippine_heritage.jpg') center/cover no-repeat;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -822,7 +841,7 @@ html.dark-theme .landscape-overlay-mask {
 }
 
 html.dark-theme .executive-message-card {
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.96) 0%, rgba(30, 41, 59, 0.92) 100%),
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.97) 0%, rgba(30, 41, 59, 0.93) 100%),
               url('../images/philippine_heritage.jpg') center/cover no-repeat;
 }
 
@@ -926,18 +945,19 @@ html.dark-theme .executive-message-card {
 
 .stat-label {
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-subtle);
   text-transform: uppercase;
 }
 
 .stat-provenance {
   font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-primary-blue);
+  font-weight: 800;
+  color: var(--color-primary-light);
   background: var(--color-primary-tint);
   padding: 0.08rem 0.35rem;
   border-radius: var(--radius-xs);
+  border: 1px solid var(--border-color);
 }
 
 .stat-value {
@@ -990,6 +1010,7 @@ html.dark-theme .executive-message-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-decoration: none;
   transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -1059,21 +1080,21 @@ html.dark-theme .executive-message-card {
 
 .action-card-category {
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--text-subtle);
 }
 
 .card-pill-tag {
   font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.1rem 0.4rem;
+  font-weight: 800;
+  padding: 0.1rem 0.45rem;
   border-radius: var(--radius-xs);
 }
 
-.card-pill-tag.green { background: var(--color-success-bg); color: var(--color-success); }
-.card-pill-tag.amber { background: var(--color-warning-bg); color: var(--color-warning); }
-.card-pill-tag.blue { background: var(--color-info-bg); color: var(--color-info); }
+.card-pill-tag.green { background: var(--color-success-bg); color: var(--color-success); border: 1px solid #bbf7d0; }
+.card-pill-tag.amber { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid #fde68a; }
+.card-pill-tag.blue { background: var(--color-info-bg); color: var(--color-info); border: 1px solid #bae6fd; }
 
 .action-card h3 {
   font-size: var(--text-base);
@@ -1093,7 +1114,7 @@ html.dark-theme .executive-message-card {
   justify-content: space-between;
   font-size: var(--text-xs);
   font-weight: 700;
-  color: var(--color-primary-blue);
+  color: var(--color-primary-light);
   padding-top: 0.85rem;
   border-top: 1px solid var(--border-color);
 }
@@ -1199,7 +1220,7 @@ html.dark-theme .executive-message-card {
 
 .phone-number {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-emergency);
   font-size: var(--text-base);
 }
@@ -1221,6 +1242,7 @@ html.dark-theme .executive-message-card {
   font-weight: 700;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-xs);
+  text-decoration: none;
   transition: background var(--transition-fast);
 }
 
@@ -1247,9 +1269,11 @@ html.dark-theme .executive-message-card {
 /* Public Advisory Box */
 .advisory-box {
   background-color: var(--color-primary-tint);
-  border-left: 4px solid var(--color-primary-blue);
+  border-left: 4px solid var(--color-primary-light);
   border-radius: var(--radius-sm);
   padding: 1.35rem;
+  border: 1px solid var(--border-color);
+  border-left-width: 4px;
 }
 
 .advisory-badge {
@@ -1279,7 +1303,7 @@ html.dark-theme .executive-message-card {
 .advisory-footer {
   font-size: var(--text-xs);
   color: var(--text-subtle);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -1325,7 +1349,7 @@ html.dark-theme .executive-message-card {
 }
 
 .interactive-table tbody tr.interactive-row:focus {
-  outline: 2px solid var(--color-primary-blue);
+  outline: 2px solid var(--color-primary-light);
 }
 
 .service-name-text {
@@ -1335,6 +1359,7 @@ html.dark-theme .executive-message-card {
 .pdf-link {
   color: var(--color-primary-light);
   font-weight: 700;
+  text-decoration: underline;
 }
 
 .table-loading {
@@ -1353,9 +1378,9 @@ html.dark-theme .executive-message-card {
   white-space: nowrap;
 }
 
-.badge-simple { background-color: #e2e8f0; color: #334155; }
+.badge-simple { background-color: #e2e8f0; color: #1e293b; }
 .badge-complex { background-color: var(--color-warning-bg); color: var(--color-warning); }
-.badge-technical { background-color: #f3e8ff; color: #7e22ce; }
+.badge-technical { background-color: #f3e8ff; color: #6b21a8; }
 .badge-active { background-color: var(--color-success-bg); color: var(--color-success); }
 
 /* Charter Filter Bar */
@@ -1375,7 +1400,7 @@ html.dark-theme .executive-message-card {
 }
 
 .charter-filter-input:focus {
-  border-color: var(--color-primary-blue);
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
@@ -1419,7 +1444,7 @@ html.dark-theme .executive-message-card {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background-color: rgba(15, 23, 42, 0.6);
+  background-color: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -1509,14 +1534,14 @@ html.dark-theme .executive-message-card {
 .modal-list li {
   padding-left: 1.25rem;
   position: relative;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .modal-list li::before {
   content: "•";
   position: absolute;
   left: 0;
-  color: var(--color-primary-blue);
+  color: var(--color-primary-light);
   font-weight: bold;
 }
 
@@ -1566,6 +1591,10 @@ html.dark-theme .executive-message-card {
   padding: 2.75rem 1rem 1.75rem;
   margin-top: auto;
   border-top: 4px solid var(--color-gold);
+}
+
+html.dark-theme .main-footer {
+  background-color: #020617;
 }
 
 .footer-container {
@@ -1627,14 +1656,14 @@ html.dark-theme .executive-message-card {
 }
 
 /* ==========================================================================
-   13. Complete High Contrast Mode Audit Fix
+   13. Complete High Contrast Mode Audit Fix (WCAG AAA Pure Black & Yellow)
    ========================================================================== */
 html.high-contrast {
-  --bg-page: #000000;
-  --bg-card: #000000;
-  --bg-card-alt: #111111;
-  --bg-header: #000000;
-  --bg-banner: #000000;
+  --bg-page: #000000 !important;
+  --bg-card: #000000 !important;
+  --bg-card-alt: #000000 !important;
+  --bg-header: #000000 !important;
+  --bg-banner: #000000 !important;
 
   --text-main: #ffffff !important;
   --text-muted: #ffffff !important;
@@ -1646,6 +1675,7 @@ html.high-contrast {
 
   --color-primary-navy: #ffffff !important;
   --color-primary-blue: #ffff00 !important;
+  --color-primary-light: #ffff00 !important;
 }
 
 html.high-contrast body {
@@ -1653,7 +1683,6 @@ html.high-contrast body {
   color: #ffffff !important;
 }
 
-html.high-contrast *,
 html.high-contrast h1,
 html.high-contrast h2,
 html.high-contrast h3,
@@ -1664,19 +1693,23 @@ html.high-contrast td,
 html.high-contrast th,
 html.high-contrast strong,
 html.high-contrast a,
-html.high-contrast .stat-label,
 html.high-contrast .stat-value,
-html.high-contrast .stat-sub,
-html.high-contrast .action-card-category,
-html.high-contrast .service-name-text {
+html.high-contrast .service-name-text,
+html.high-contrast .footer-title,
+html.high-contrast .agency-title {
   color: #ffffff !important;
 }
 
 html.high-contrast .eyebrow-tag,
+html.high-contrast .stat-label,
+html.high-contrast .stat-sub,
 html.high-contrast .stat-provenance,
 html.high-contrast .phone-number,
 html.high-contrast .card-pill-tag,
-html.high-contrast .pdf-link {
+html.high-contrast .pdf-link,
+html.high-contrast .action-card-category,
+html.high-contrast .clock-display,
+html.high-contrast .tagline-main {
   color: #ffff00 !important;
 }
 
@@ -1687,9 +1720,32 @@ html.high-contrast .stat-block,
 html.high-contrast .executive-message-card,
 html.high-contrast .search-hero-card,
 html.high-contrast .data-table,
-html.high-contrast .emergency-item {
+html.high-contrast .emergency-item,
+html.high-contrast .advisory-box,
+html.high-contrast .table-responsive,
+html.high-contrast .modal-container {
   border: 2px solid #ffffff !important;
+  background: #000000 !important;
+}
+
+html.high-contrast input {
   background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+html.high-contrast input::placeholder {
+  color: #ffff00 !important;
+}
+
+html.high-contrast .badge,
+html.high-contrast .card-pill-tag,
+html.high-contrast .stat-provenance,
+html.high-contrast .seal-badge,
+html.high-contrast .advisory-badge {
+  background-color: #000000 !important;
+  border: 1px solid #ffff00 !important;
+  color: #ffff00 !important;
 }
 
 html.text-scale-sm { font-size: 14px; }
