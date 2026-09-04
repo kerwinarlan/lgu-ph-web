@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=11.0.0">
+  <link rel="stylesheet" href="css/style.css?v=12.0.0">
 </head>
 <body>
 
@@ -79,7 +79,7 @@
         <span class="gov-brand-title">Republic of the Philippines &bull; Province of Cavite</span>
       </div>
 
-      <!-- Accessibility & Time Controls -->
+      <!-- Accessibility & Theme Controls -->
       <div class="utility-controls-group">
         <div class="a11y-btn-group" aria-label="Accessibility Text Resize & Contrast">
           <span class="a11y-label">Text Size:</span>
@@ -88,6 +88,9 @@
           <button type="button" id="btn-font-increase" class="a11y-btn" title="Increase font size">A+</button>
           <button type="button" id="btn-high-contrast" class="a11y-btn contrast-toggle" title="Toggle high contrast mode">
             <span>High Contrast</span>
+          </button>
+          <button type="button" id="btn-theme-toggle" class="a11y-btn theme-toggle" title="Toggle dark mode">
+            <span>🌙 Dark Mode</span>
           </button>
         </div>
 
@@ -178,9 +181,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
           <input type="text" id="universal-search-input" class="universal-input" placeholder="Type service, clearance, or bid title (e.g. BPLO, Tax, Health, Building Permit)...">
-          <div class="search-shortcut-hint">
-            <kbd class="kbd-pill">⌘K</kbd> or <kbd class="kbd-pill">/</kbd>
-          </div>
+          <button type="button" id="universal-search-btn" class="search-submit-btn" onclick="document.getElementById('universal-search-input').focus()">Search Services</button>
           <button type="button" id="universal-search-clear" class="search-clear-btn" title="Clear search" aria-label="Clear search">&times;</button>
         </div>
 

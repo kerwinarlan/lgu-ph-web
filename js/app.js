@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initPSTClock();
   initGovBannerToggle();
   initAccessibilityEngine();
+  initThemeEngine();
   initUniversalSearch();
   initStatCounters();
   initCharterTableDelegation();
@@ -64,9 +65,9 @@ function renderSectionError(elementId, message) {
   const elem = document.getElementById(elementId);
   if (!elem) return;
   if (elem.tagName === "TBODY") {
-    elem.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-subtle);padding:1.5rem;">⚠️ ${escapeHTML(message)}</td></tr>`;
+    elem.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:1.5rem;">⚠️ ${escapeHTML(message)}</td></tr>`;
   } else {
-    elem.innerHTML = `<div style="color:var(--text-subtle);padding:1rem;">⚠️ ${escapeHTML(message)}</div>`;
+    elem.innerHTML = `<div style="padding:1rem;">⚠️ ${escapeHTML(message)}</div>`;
   }
 }
 
@@ -83,7 +84,7 @@ function initGovBannerToggle() {
   });
 }
 
-// Accessibility Text Resize & High Contrast Engine
+// Accessibility Text Resize Engine
 function initAccessibilityEngine() {
   const root = document.documentElement;
   const btnDecrease = document.getElementById("btn-font-decrease");
@@ -91,7 +92,7 @@ function initAccessibilityEngine() {
   const btnIncrease = document.getElementById("btn-font-increase");
   const btnContrast = document.getElementById("btn-high-contrast");
 
-  // Load saved preferences
+  // Load saved font scale preference
   const savedScale = localStorage.getItem("lgu_text_scale") || "normal";
   const savedContrast = localStorage.getItem("lgu_high_contrast") === "true";
 
@@ -117,21 +118,42 @@ function initAccessibilityEngine() {
   }
 }
 
-// Universal Search Bar Filtering & Keyboard Shortcuts (Cmd+K / '/')
+// Dedicated Light / Dark Mode Theme Engine
+function initThemeEngine() {
+  const root = document.documentElement;
+  const btnTheme = document.getElementById("btn-theme-toggle");
+
+  const updateButtonText = (isDark) => {
+    if (!btnTheme) return;
+    btnTheme.innerHTML = isDark ? "<span>☀️ Light Mode</span>" : "<span>🌙 Dark Mode</span>";
+  };
+
+  // Saved theme or OS preference
+  const savedTheme = localStorage.getItem("lgu_theme");
+  const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = savedTheme ? savedTheme === "dark" : systemPrefersDark;
+
+  if (isDark) root.classList.add("dark-theme");
+  updateButtonText(isDark);
+
+  if (btnTheme) {
+    btnTheme.addEventListener("click", () => {
+      const activeDark = root.classList.toggle("dark-theme");
+      localStorage.setItem("lgu_theme", activeDark ? "dark" : "light");
+      updateButtonText(activeDark);
+      showToast(activeDark ? "Dark theme enabled" : "Light theme restored");
+    });
+  }
+}
+
+// Universal Search Bar Filtering & Keyboard Shortcut
 function initUniversalSearch() {
   const searchInput = document.getElementById("universal-search-input");
   const clearBtn = document.getElementById("universal-search-clear");
   if (!searchInput) return;
 
-  // Global Keyboard Shortcuts
+  // '/' shortcut when not in input/textarea
   window.addEventListener("keydown", (e) => {
-    // Cmd+K or Ctrl+K
-    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-      e.preventDefault();
-      searchInput.focus();
-      searchInput.select();
-    }
-    // '/' shortcut when not in input/textarea
     if (e.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
       e.preventDefault();
       searchInput.focus();
@@ -274,7 +296,7 @@ function renderLGUHeader(lgu) {
       <p>"${escapeHTML(lgu.mayor.message)}"</p>
       <div class="executive-signature">
         <span>&mdash; ${escapeHTML(lgu.mayor.name)}, ${escapeHTML(lgu.mayor.title || 'Municipal Mayor')} (${escapeHTML(lgu.mayor.term)})</span>
-        <span style="color: var(--color-gold-dark); font-weight: 800;">Tanza, Cavite</span>
+        <span class="executive-location">Tanza, Cavite</span>
       </div>
     `;
   }
@@ -287,8 +309,8 @@ function renderEmergencyContacts(emergency) {
   container.innerHTML = emergency.hotlines.map(h => `
     <li class="emergency-item">
       <div>
-        <strong style="color: var(--color-primary-navy); font-size: 0.95rem;">${escapeHTML(h.agency)}</strong><br>
-        <span class="phone-number">${escapeHTML(h.phone)}</span> <span style="font-size:0.8rem;color:var(--text-subtle)">(${escapeHTML(h.landline)})</span>
+        <strong class="agency-title">${escapeHTML(h.agency)}</strong><br>
+        <span class="phone-number">${escapeHTML(h.phone)}</span> <span class="landline-sub">(${escapeHTML(h.landline)})</span>
       </div>
       <div class="btn-group-hotline">
         <a href="tel:${h.phone.replace(/[^0-9+]/g, '')}" class="btn-call">CALL 24/7</a>
@@ -389,7 +411,7 @@ function renderCharterRows(services) {
   if (!tbody) return;
 
   if (!services || services.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-subtle);">No matching services found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No matching services found.</td></tr>`;
     return;
   }
 
@@ -401,7 +423,7 @@ function renderCharterRows(services) {
     return `
       <tr class="interactive-row" data-charter-id="${escapeHTML(s.id)}" tabindex="0" role="button" aria-label="View details for ${escapeHTML(s.service_name)}">
         <td><strong>${escapeHTML(s.id)}</strong></td>
-        <td><strong style="color:var(--color-primary-navy);">${escapeHTML(s.service_name)}</strong></td>
+        <td><strong class="service-name-text">${escapeHTML(s.service_name)}</strong></td>
         <td>${escapeHTML(s.office)}</td>
         <td><span class="badge ${badgeClass}">${escapeHTML(s.classification)}</span></td>
         <td>${escapeHTML(s.processing_time)}</td>
@@ -482,17 +504,17 @@ function renderBACRows(docs) {
   if (!tbody) return;
 
   if (!docs || docs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-subtle);">No active procurement notices matching query.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No active procurement notices matching query.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = docs.map((d, idx) => `
     <tr>
       <td><strong>TNZ-BAC-2025-0${idx + 1}</strong></td>
-      <td><strong style="color:var(--color-primary-navy);">${escapeHTML(d.title)}</strong></td>
+      <td><strong class="service-name-text">${escapeHTML(d.title)}</strong></td>
       <td>₱${(2500000 + idx * 1250000).toLocaleString('en-US')}</td>
       <td><span class="badge badge-active">Open for Bidding</span></td>
-      <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
+      <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" class="pdf-link">Download PDF</a></td>
     </tr>
   `).join("");
 }
@@ -527,10 +549,10 @@ function renderFDPDocuments(fdp) {
   const renderFDPRows = (docs) => {
     tbody.innerHTML = docs.map(d => `
       <tr>
-        <td><strong style="color:var(--color-primary-navy);">${escapeHTML(d.category)}</strong></td>
+        <td><strong class="service-name-text">${escapeHTML(d.category)}</strong></td>
         <td>${escapeHTML(d.title)}</td>
         <td>${escapeHTML(d.publication_date)}</td>
-        <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary-light);font-weight:700;">Download PDF</a></td>
+        <td><a href="${escapeHTML(d.file_url)}" target="_blank" rel="noopener noreferrer" class="pdf-link">Download PDF</a></td>
       </tr>
     `).join("");
   };
